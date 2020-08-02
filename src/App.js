@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react'
-import Tracklist from './Tracklist'
 import './App.css'
 
 function App() {
 
   const [playlistID, setID] = useState('')
   const [playlistName, setName] = useState('')
-  const [playlistDesc, setDesc] = useState('')
   const [playlistOwner, setOwner] = useState('')
   const [playlistTracks, setTrack] = useState([])
 
@@ -40,31 +38,21 @@ function App() {
           json: true
         }
         request.get(options, function(error, response, body) {
-          
-          if (body.name !== undefined) {setName(body.name)}
-          if (body.description !== undefined) {setDesc(body.description)}
-          if (body.owner !== undefined) {setOwner(body.owner.display_name)}
-          if (body.tracks !== undefined) {setTrack(body.tracks.items)}
-
-          // body.tracks.items.forEach(item => {
-          //   setTrack(playlistTracks.concat(item))
-          // })
-          
-          // console.log(body)
-          // console.log(playlistDesc)
-          // console.log(playlistName)
-          // console.log(playlistOwner)
-          console.log(playlistTracks)
-          // console.log(playlistTracks.length)
+          if (typeof body === 'object' && body !== null) {
+            if (body.name !== undefined) {setName(body.name)}
+            if (body.owner !== undefined) {setOwner(body.owner.display_name)}
+            if (body.tracks !== undefined) {setTrack(body.tracks.items)}
+          }
         })
       }
     })
+    console.log(playlistTracks)
     console.log(playlistID)
   }
 
   return (
     <main className="App">
-      <form onSubmit={GetPlaylist} autoComplete="off">
+      <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
         <label htmlFor="playlist">Playlist ID: </label>
         <input type="text" id="playlist" name="playlist" value={playlistID} onChange={event => setID(event.target.value)} />
         <button type="submit">Submit</button>
@@ -73,17 +61,28 @@ function App() {
       <h3>{playlistName}</h3>
       <h3>{playlistOwner}</h3>
 
-      {/* <Tracklist tracks={playlistTracks} /> */}
-      <div>
-        {playlistTracks.map(track => (
-          <div>       
-            <h3>{track.added_at}</h3>
-            <h3>{track.track.name}</h3>
-            <h3>{track.track.album.name}</h3>
-            {/* <h3>{track.track.artists.forEach()}</h3> */}
-          </div>
+      <table className="tracklisting">
+      <tbody>
+        <tr>
+          <th>Track</th>
+          <th>Artist</th>
+          <th>Album</th>
+          <th>Date Added</th>
+        </tr>
+        {playlistTracks.map((track, index) => (
+          <tr key={index}>
+            <td>{track.track.name}</td>
+            <td>
+              {track.track.artists.map((artist, index) => (
+                index === 0 ? <span key={index}>{artist.name}</span> : <span key={index}>, {artist.name}</span>
+              ))}
+            </td>
+            <td>{track.track.album.name}</td>
+            <td>{track.added_at.substring(0, 10)}</td>
+          </tr>
         ))}
-      </div>
+      </tbody>
+      </table>
 
     </main>
   )
