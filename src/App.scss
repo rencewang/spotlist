@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@337&display=swap');
+
+
+.App {
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  width: 90%;
+  max-width: 1500px;
+  margin: 0 auto;
+  @media (max-width: 650px) {
+    width: 95%;
+  }
+}
+
+#tracktable {
+  display: none;
+}
+
+#tryagain {
+  display: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
