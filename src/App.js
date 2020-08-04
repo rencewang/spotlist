@@ -121,7 +121,7 @@ function App() {
                   <button onClick={() => CopyToClipboard(`${index}albumname`)}><Icon icon={bxCopy} width="20px" /></button>
                 </div>
               </td>
-              <td>{track.added_at.substring(0, 10)}</td>
+              <td>{track.added_at.substring(5,7)}/{track.added_at.substring(8,10)}/{track.added_at.substring(0,4)}</td>
             </tr>
           ))}
         </tbody>
