@@ -4,7 +4,7 @@ import './App.scss'
 function App() {
 
   // getting playlist from Spotify API
-  const [playlistID, setID] = useState('')
+  const [playlistID, setID] = useState('Enter Playlist ID')
   const [playlistName, setName] = useState('')
   const [playlistOwner, setOwner] = useState('')
   const [playlistTracks, setTrack] = useState([])
@@ -66,8 +66,7 @@ function App() {
   return (
     <main className="App">
       <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
-        <label htmlFor="playlist">Playlist ID: </label>
-        <input type="text" id="playlist" name="playlist" value={playlistID} onChange={event => setID(event.target.value)} />
+        <input type="text" id="playlist" name="playlist" value={playlistID} onClick={() => setID('')} onChange={event => setID(event.target.value)} />
         <button type="submit">Submit</button>
       </form>
 
@@ -114,12 +113,10 @@ function App() {
         </div>
 
         <div id="instruction">
-          instructions
+          Get the basic information and tracklist of any public Spotify playlist.
         </div>
 
       </div>
-
-
     </main>
   )
 }
