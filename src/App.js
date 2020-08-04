@@ -68,11 +68,17 @@ function App() {
     window.getSelection().removeAllRanges()
   }
 
+  function resetField() {
+    if(playlistID === 'Enter Playlist ID') {
+      setID('')
+    }
+  }
+
   return (
     <main className="App">
 
       <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
-        <input type="text" id="playlist" name="playlist" value={playlistID} onClick={() => setID('')} onChange={event => setID(event.target.value)} />
+        <input type="text" id="playlist" name="playlist" value={playlistID} onClick={() => resetField()} onChange={event => setID(event.target.value)} />
         <button type="submit">Let's Go</button>
       </form>
 
@@ -106,13 +112,13 @@ function App() {
                       <span key={index}>, {artist.name}</span>
                     ))}
                   </div>
-                  <button onClick={() => CopyToClipboard(`${index}artistname`)}>Copy</button>
+                  <button onClick={() => CopyToClipboard(`${index}artistname`)}><Icon icon={bxCopy} width="20px" /></button>
                 </div>
               </td>
               <td>
                 <div className="justify">
                   <div id={`${index}albumname`}>{track.track.album.name}</div>
-                  <button onClick={() => CopyToClipboard(`${index}albumname`)}>Copy</button>
+                  <button onClick={() => CopyToClipboard(`${index}albumname`)}><Icon icon={bxCopy} width="20px" /></button>
                 </div>
               </td>
               <td>{track.added_at.substring(0, 10)}</td>
