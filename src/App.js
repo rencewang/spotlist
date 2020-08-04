@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Helmet } from 'react-helmet'
 import { Icon } from '@iconify/react'
 import bxCopy from '@iconify/icons-bx/bx-copy'
 
@@ -47,6 +46,7 @@ function App() {
               document.getElementById("tryagain").style.display = "none"
             } else {
               document.getElementById("tryagain").style.display = "block"
+              document.getElementById("results").style.display = "none"
             }
             if (body.owner !== undefined) {setOwner(body.owner.display_name)}
             if (body.tracks !== undefined) {setTrack(body.tracks.items)}
@@ -70,9 +70,6 @@ function App() {
 
   return (
     <main className="App">
-      <Helmet>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </Helmet>
 
       <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
         <input type="text" id="playlist" name="playlist" value={playlistID} onClick={() => setID('')} onChange={event => setID(event.target.value)} />
@@ -80,8 +77,8 @@ function App() {
       </form>
 
       <div className="results" id="results">
-        <h3 id="playlistName">{playlistName}<small>Playlist Name</small></h3>
-        <h3 id="playlistOwner">{playlistOwner}<small>Published By</small></h3>
+        <h3 id="playlistName">{playlistName}<small>  Playlist Name</small></h3>
+        <h3 id="playlistOwner">{playlistOwner}<small>  Published By</small></h3>
         <table className="tracklisting" id="tracktable">
         <thead>
           <tr>
@@ -126,7 +123,8 @@ function App() {
       </div>
 
       <div id="tryagain"> 
-        Try again
+        <div>Try again</div>
+        <div>please enter a valid playlist ID</div>
       </div>
 
       <div id="instruction">
