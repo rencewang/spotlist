@@ -1,4 +1,8 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import { Helmet } from 'react-helmet'
+import { Icon } from '@iconify/react'
+import bxCopy from '@iconify/icons-bx/bx-copy'
+
 import './App.scss'
 
 function App() {
@@ -39,7 +43,8 @@ function App() {
           if (typeof body === 'object' && body !== null) {
             if (body.name !== undefined) {
               setName(body.name)
-              document.getElementById("tracktable").style.display = "block"
+              document.getElementById("results").style.display = "block"
+              document.getElementById("tryagain").style.display = "none"
             } else {
               document.getElementById("tryagain").style.display = "block"
             }
@@ -65,58 +70,70 @@ function App() {
 
   return (
     <main className="App">
+      <Helmet>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Helmet>
+
       <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
         <input type="text" id="playlist" name="playlist" value={playlistID} onClick={() => setID('')} onChange={event => setID(event.target.value)} />
-        <button type="submit">Submit</button>
+        <button type="submit">Let's Go</button>
       </form>
 
-      <h3 id="playlistName">{playlistName}</h3>
-      <h3>{playlistOwner}</h3>
-
-      <div className="results">
+      <div className="results" id="results">
+        <h3 id="playlistName">{playlistName}<small>Playlist Name</small></h3>
+        <h3 id="playlistOwner">{playlistOwner}<small>Published By</small></h3>
         <table className="tracklisting" id="tracktable">
-        <tbody>
+        <thead>
           <tr>
             <th>Track</th>
             <th>Artist</th>
             <th>Album</th>
-            <th>Date Added</th>
+            <th>Added on</th>
           </tr>
+        </thead>
+        <tbody>
           {playlistTracks.map((track, index) => (
             <tr key={index}>
               <td>
-                <div id={`${index}trackname`}>{track.track.name}</div>
-                <button onClick={() => CopyToClipboard(`${index}trackname`)}>Copy</button>
-              </td>
-              <td>
-                <div id={`${index}artistname`}>
-                  {track.track.artists.map((artist, index) => (
-                    index === 0 ? 
-                    <span key={index}>{artist.name}</span> : 
-                    <span key={index}>, {artist.name}</span>
-                  ))}
+                <div className="justify">
+                  <div id={`${index}trackname`}>{track.track.name}</div>
+                  <button onClick={() => CopyToClipboard(`${index}trackname`)}><Icon icon={bxCopy} width="20px" /></button>
                 </div>
-                <button onClick={() => CopyToClipboard(`${index}artistname`)}>Copy</button>
               </td>
               <td>
-                <div id={`${index}albumname`}>{track.track.album.name}</div>
-                <button onClick={() => CopyToClipboard(`${index}albumname`)}>Copy</button>
+                <div className="justify">
+                  <div id={`${index}artistname`}>
+                    {track.track.artists.map((artist, index) => (
+                      index === 0 ? 
+                      <span key={index}>{artist.name}</span> : 
+                      <span key={index}>, {artist.name}</span>
+                    ))}
+                  </div>
+                  <button onClick={() => CopyToClipboard(`${index}artistname`)}>Copy</button>
+                </div>
+              </td>
+              <td>
+                <div className="justify">
+                  <div id={`${index}albumname`}>{track.track.album.name}</div>
+                  <button onClick={() => CopyToClipboard(`${index}albumname`)}>Copy</button>
+                </div>
               </td>
               <td>{track.added_at.substring(0, 10)}</td>
             </tr>
           ))}
         </tbody>
         </table>
-
-        <div id="tryagain"> 
-          Try again
-        </div>
-
-        <div id="instruction">
-          Get the basic information and tracklist of any public Spotify playlist.
-        </div>
-
       </div>
+
+      <div id="tryagain"> 
+        Try again
+      </div>
+
+      <div id="instruction">
+        Get the basic information and tracklist of any public Spotify playlist.
+      </div>
+
+      
     </main>
   )
 }

@@ -1,9 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@337&display=swap');
 
-
 .App {
   text-align: left;
-  font-family: 'Inter', sans-serif;
+  // font-family: 'Inter', sans-serif;
   width: 90%;
   max-width: 1500px;
   margin: 50px auto;
@@ -12,13 +11,13 @@
   }
 }
 
-body { background-color: #dee1ec; }
+body { background-color: #dee1ec; width: 100vw; }
 *, *:before, *:after { box-sizing: border-box; }
 input:focus, select:focus, textarea:focus, button:focus { outline: none; }
-#tracktable { display: none; }
 #tryagain { display: none; }
 
 .trackIDform {
+  width: 100%;
   input {
     width: 400px;
     height: 40px;
@@ -33,10 +32,13 @@ input:focus, select:focus, textarea:focus, button:focus { outline: none; }
       4px 4px 5px 0px rgba(0,0,0,.1);
     background: transparent;
     border-radius: 10px;
+    @media (max-width: 650px) {
+      width: 300px;
+    }
   }
   button {
     border: none;
-    width: 100px;
+    width: 120px;
     height: 40px;
     padding: 10px auto;
     margin-left: 20px;
@@ -52,7 +54,6 @@ input:focus, select:focus, textarea:focus, button:focus { outline: none; }
       7px 7px 20px 0px rgba(0,0,0,.1),
       4px 4px 5px 0px rgba(0,0,0,.1);
     border-radius: 10px;
-
     &:after {
       position: absolute;
       content: "";
@@ -81,23 +82,70 @@ input:focus, select:focus, textarea:focus, button:focus { outline: none; }
   }
 }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
+.results {
+  color: #404040;
+  display: none;
+  max-width: 100vw;
+  h3 {
+    font-size: 5em;
+    font-weight: 500;
+    font-style: italic;
+    margin: 0; padding: 0;
+    &:first-child { margin-top: 30px; }
+    &:last-of-type { margin-bottom: 30px; }
+    small {
+      font-size: 20px;
+      font-style: normal;
+    }
+  }
+  table {
+    width: 100%;
+    border-radius: 20px;
+    border-spacing: 0;
+    color: #404040;
+    overflow: hidden;
+    box-shadow: inset
+      5px 5px 5px 0px rgba(255,255,255,.5),
+      10px 10px 20px 0px rgba(0,0,0,.1),
+      10px 10px 5px 0px rgba(0,0,0,.1);
+    thead {
+      box-shadow: 9px 9px 16px rgba(163, 177, 198, 0.6);
+      th {
+        padding: 10px;
+        font-size: 20px;
+      }
+    }
+    tbody tr {
+      transition: all 0.3s ease;
+      &:hover {
+        padding: 20px;
+        box-shadow: 
+          9px 9px 16px rgba(163, 177, 198, 0.6),
+          -9px -9px 16px rgba(255, 255, 255, 0.6);
+      }
+      td {
+        padding: 10px;
+        font-size: 14px;
+        position: relative;
+      }
+    }
+    button {
+      border: 0;
+      background-color: transparent;
+      height: 100%;
+    }
+  }
 }
 
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: #dddddd;
+.justify {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 #tryagain,
 #instruction {
-  font-size: 10vw;
+  margin-top: 30px;
+  font-size: 5em;
   color: #404040;
 }
