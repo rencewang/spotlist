@@ -1,3 +1,3 @@
 a tool to get playlist information from Spotify
 
-(try it)[spotlist.netlify.app]
+[try it](spotlist.netlify.app)
