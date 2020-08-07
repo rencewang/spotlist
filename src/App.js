@@ -134,7 +134,10 @@ function App() {
       </div>
 
       <div id="instruction">
-        Get the basic information and tracklist of any public Spotify playlist.
+        <div>Get the basic information and tracklist of any Spotify playlist.</div>
+        <div className="try" style={{fontSize: "40px", marginTop: "30px", marginBottom: "20px", fontStyle: "italic"}}>Want something to get started with?</div>
+        <div className="try">Try this: 37i9dQZF1DX5Ejj0EkURtP</div>
+        <div className="try">Or this: 37i9dQZF1DXcBWIGoYBM5M</div>
       </div>
 
       
