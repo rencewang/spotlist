@@ -78,7 +78,7 @@ function App() {
     <main className="App">
 
       <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
-        <input type="text" id="playlist" name="playlist" value={playlistID} onClick={() => resetField()} onChange={event => setID(event.target.value)} />
+        <input type="text" id="playlist" name="playlist" value={playlistID} onClick={() => resetField()} onChange={event => setID(event.target.value)} required/>
         <button type="submit">Let's Go</button>
       </form>
 
