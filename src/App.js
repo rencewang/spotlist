@@ -131,6 +131,9 @@ function App() {
       <div id="tryagain"> 
         <div>Try again</div>
         <div>please enter a valid playlist ID</div>
+        <div className="try" style={{fontSize: "40px", marginTop: "30px", marginBottom: "20px", fontStyle: "italic"}}>Want something to get started with?</div>
+        <div className="try">Try this: 37i9dQZF1DX5Ejj0EkURtP</div>
+        <div className="try">Or this: 37i9dQZF1DXcBWIGoYBM5M</div>
       </div>
 
       <div id="instruction">
