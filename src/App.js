@@ -69,10 +69,14 @@ function App() {
   }
 
   // for displaying the button
-  const [copiedVisible, setCopied] = useState("none")
+  const [copiedDisplay, setCopiedDisplay] = useState("none")
+  const [copiedOpacity, setCopiedOpacity] = useState(0)
   function ShowCopied() {
-      setCopied("block")
-      setTimeout(() => setCopied("none"), 500)
+    console.log("copied")
+    setCopiedDisplay("block")
+    setCopiedOpacity(100)
+    setTimeout(() => setCopiedOpacity(0), 500)
+    setTimeout(() => setCopiedDisplay("none"), 1000)
   }
 
   function resetField() {
@@ -84,7 +88,7 @@ function App() {
   return (
     <main className="App">
 
-      <div className="copy_msg" style={{display: copiedVisible}} id="copied">
+      <div className="copy_msg" style={{display: copiedDisplay, opacity: copiedOpacity}} id="copied">
           Copied!
       </div>
 

@@ -184,6 +184,7 @@ input:focus, select:focus, textarea:focus, button:focus { outline: none; }
   margin: auto;
   margin-top: 80px;
   text-align: center;
+  text-shadow: 2px 2px 20px rgb(80, 80, 80);
   // display: flex;
   // align-items: center;
   // justify-content: center;
@@ -194,6 +195,7 @@ input:focus, select:focus, textarea:focus, button:focus { outline: none; }
   font-weight: 700;
   font-size: 20px;
   color: rgb(0, 0, 0);
+  transition: all 0.3s ease;
 }
 
 .justify {
