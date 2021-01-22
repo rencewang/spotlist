@@ -68,14 +68,25 @@ function App() {
     window.getSelection().removeAllRanges()
   }
 
+  // for displaying the button
+  const [copiedVisible, setCopied] = useState("none")
+  function ShowCopied() {
+      setCopied("block")
+      setTimeout(() => setCopied("none"), 500)
+  }
+
   function resetField() {
-    if(playlistID === 'Enter Playlist ID') {
+    if (playlistID === 'Enter Playlist ID') {
       setID('')
     }
   }
 
   return (
     <main className="App">
+
+      <div className="copy_msg" style={{display: copiedVisible}} id="copied">
+          Copied!
+      </div>
 
       <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
         <input type="text" id="playlist" name="playlist" value={playlistID} onClick={() => resetField()} onChange={event => setID(event.target.value)} required/>
@@ -100,7 +111,7 @@ function App() {
               <td>
                 <div className="justify">
                   <div id={`${index}trackname`}>{track.track.name}</div>
-                  <button onClick={() => CopyToClipboard(`${index}trackname`)}><Icon icon={bxCopy} width="20px" /></button>
+                  <button onClick={() => {CopyToClipboard(`${index}trackname`); ShowCopied()}}><Icon icon={bxCopy} width="20px" /></button>
                 </div>
               </td>
               <td>
@@ -112,13 +123,13 @@ function App() {
                       <span key={index}>, {artist.name}</span>
                     ))}
                   </div>
-                  <button onClick={() => CopyToClipboard(`${index}artistname`)}><Icon icon={bxCopy} width="20px" /></button>
+                  <button onClick={() => {CopyToClipboard(`${index}artistname`); ShowCopied()}}><Icon icon={bxCopy} width="20px" /></button>
                 </div>
               </td>
               <td>
                 <div className="justify">
                   <div id={`${index}albumname`}>{track.track.album.name}</div>
-                  <button onClick={() => CopyToClipboard(`${index}albumname`)}><Icon icon={bxCopy} width="20px" /></button>
+                  <button onClick={() => {CopyToClipboard(`${index}albumname`); ShowCopied()}}><Icon icon={bxCopy} width="20px" /></button>
                 </div>
               </td>
               <td>{track.added_at.substring(5,7)}/{track.added_at.substring(8,10)}/{track.added_at.substring(0,4)}</td>
