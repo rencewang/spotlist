@@ -7,7 +7,7 @@ import './App.scss'
 function App() {
 
   // getting playlist from Spotify API
-  const [playlistID, setID] = useState('Enter Playlist ID')
+  const [playlistID, setID] = useState('')
   const [playlistName, setName] = useState('')
   const [playlistOwner, setOwner] = useState('')
   const [playlistTracks, setTrack] = useState([])
@@ -79,12 +79,6 @@ function App() {
     setTimeout(() => setCopiedDisplay("none"), 1000)
   }
 
-  function resetField() {
-    if (playlistID === 'Enter Playlist ID') {
-      setID('')
-    }
-  }
-
   return (
     <main className="App">
 
@@ -93,7 +87,7 @@ function App() {
       </div>
 
       <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
-        <input type="text" id="playlist" name="playlist" value={playlistID} onClick={() => resetField()} onChange={event => setID(event.target.value)} required/>
+        <input type="text" id="playlist" name="playlist" value={playlistID} placeholder="Enter Playlist ID" onChange={event => setID(event.target.value)} required/>
         <button type="submit">Let's Go</button>
       </form>
 
