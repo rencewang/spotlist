@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
 import { Icon } from '@iconify/react'
 import bxCopy from '@iconify/icons-bx/bx-copy'
+import ReactGA from 'react-ga';
 
 import './App.scss'
 
 function App() {
 
-  // getting playlist from Spotify API
+  // Google Analytics
+  ReactGA.initialize('G-C0CDR2SDRS');
+  ReactGA.pageview(window.location.pathname + window.location.search);
+
+  // Getting playlist from Spotify API
   const [playlistID, setID] = useState('')
   const [playlistName, setName] = useState('')
   const [playlistOwner, setOwner] = useState('')
@@ -58,7 +63,7 @@ function App() {
     console.log(playlistID)
   }
 
-  // for copy to clipboard button
+  // For copy to clipboard button
   function CopyToClipboard(element) {
     var range = document.createRange()
     range.selectNode(document.getElementById( element ))
@@ -68,7 +73,7 @@ function App() {
     window.getSelection().removeAllRanges()
   }
 
-  // for displaying the button
+  // For "Copied" alert
   const [copiedDisplay, setCopiedDisplay] = useState("none")
   const [copiedOpacity, setCopiedOpacity] = useState(0)
   function ShowCopied() {
@@ -82,7 +87,7 @@ function App() {
   return (
     <main className="App">
 
-      <div className="copy_msg" style={{display: copiedDisplay, opacity: copiedOpacity}} id="copied">
+      <div className="alert-message" style={{display: copiedDisplay, opacity: copiedOpacity}} id="copied">
           Copied!
       </div>
 
@@ -150,6 +155,11 @@ function App() {
         <div className="try" style={{fontSize: "40px", marginTop: "30px", marginBottom: "20px", fontStyle: "italic"}}>Want something to get started with?</div>
         <div className="try">Try this: 37i9dQZF1DX5Ejj0EkURtP</div>
         <div className="try">Or this: 37i9dQZF1DXcBWIGoYBM5M</div>
+      </div>
+
+      <div id="notes">
+        <div className="try">2021.01.22: style overhaul</div>
+        <div className="try">2021.01.23: style overhaul</div>
       </div>
 
       

@@ -170,11 +170,15 @@ input:focus, select:focus, textarea:focus, button:focus { outline: none; }
       &:hover {
         color: #777;
       }
+      &:active {
+        top: 2px;
+        position: relative;
+      }
     }
   }
 }
 
-.copy_msg {
+.alert-message {
   position: fixed;
   height: 40px;
   width: 175px;
