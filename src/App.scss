@@ -1,17 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@337&display=swap');
 
-.App {
-  text-align: left;
-  // font-family: 'Inter', sans-serif;
-  width: 90%;
-  max-width: 1500px;
-  margin: 50px auto;
-  @media (max-width: 650px) {
-    width: 95%;
-    margin: 30px auto 50px auto;
-  }
-}
-
 html, body {max-width: 100%;}
 
 body { 
@@ -28,6 +16,18 @@ body {
 *, *:before, *:after { box-sizing: border-box; }
 input:focus, select:focus, textarea:focus, button:focus { outline: none; }
 #tryagain { display: none; }
+
+.App {
+  text-align: left;
+  // font-family: 'Inter', sans-serif;
+  width: 90%;
+  max-width: 1500px;
+  margin: 50px auto;
+  @media (max-width: 650px) {
+    width: 95%;
+    margin: 30px auto 50px auto;
+  }
+}
 
 .trackIDform {
   width: 100%;

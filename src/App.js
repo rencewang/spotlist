@@ -89,7 +89,8 @@ function App() {
     var hue = 1 + Math.random() * (360 - 1)
     return `hsl(${hue}, 65%, 80%)`
   }
-  document.body.style.backgroundColor = RandomBackgroundColor()
+  const [randomBackgroundColor] = useState(RandomBackgroundColor())
+  document.body.style.backgroundColor = randomBackgroundColor
 
   return (
     <main className="App">
@@ -169,7 +170,6 @@ function App() {
         <div className="try">2021.01.23: style overhaul</div>
       </div>
 
-      
     </main>
   )
 }
