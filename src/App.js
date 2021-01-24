@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
 import bxCopy from '@iconify/icons-bx/bx-copy'
 import bxPlay from '@iconify/icons-bx/bx-play'
@@ -13,10 +13,26 @@ function App() {
   ReactGA.pageview(window.location.pathname + window.location.search);
 
   // Getting playlist from Spotify API
+  const [userInput, setInput] = useState('')
   const [playlistID, setID] = useState('')
   const [playlistName, setName] = useState('')
   const [playlistOwner, setOwner] = useState('')
   const [playlistTracks, setTrack] = useState([])
+  const [tryAgainDisplay, setTryAgainDisplay] = useState("none")
+  const [tryAgainOpacity, setTryAgainOpacity] = useState(100)
+
+  useEffect(
+    () => {
+      if (userInput.match("https://open.spotify.com/playlist/")) {
+        setID(userInput.slice(34))
+      } else if (userInput.match("open.spotify.com/playlist/")) {
+        setID(userInput.slice(26))
+      } else {
+      setID(userInput)
+      }
+    },
+    [userInput],
+  )
 
   const GetPlaylist = event => {
     event.preventDefault()
@@ -44,18 +60,28 @@ function App() {
           json: true
         }
         request.get(options, function(error, response, body) {
-          document.getElementById("instruction").style.display = "none"
+          console.log(response)
           if (typeof body === 'object' && body !== null) {
             if (body.name !== undefined) {
               setName(body.name)
               document.getElementById("results").style.display = "block"
-              document.getElementById("tryagain").style.display = "none"
+              document.getElementById("instruction").style.display = "none"
             } else {
-              document.getElementById("tryagain").style.display = "block"
-              document.getElementById("results").style.display = "none"
+              console.log("Try Again.")
+              setTryAgainDisplay("block")
+              setTryAgainOpacity(100)
+              setTimeout(() => setTryAgainOpacity(0), 250)
+              setTimeout(() => setTryAgainDisplay("none"), 500)
             }
             if (body.owner !== undefined) {setOwner(body.owner.display_name)}
             if (body.tracks !== undefined) {setTrack(body.tracks.items)}
+          }
+          if (response.statusCode === 404) {
+            console.log("Try Again.")
+            setTryAgainDisplay("block")
+            setTryAgainOpacity(100)
+            setTimeout(() => setTryAgainOpacity(0), 250)
+            setTimeout(() => setTryAgainDisplay("none"), 500)
           }
         })
       }
@@ -78,11 +104,11 @@ function App() {
   const [copiedDisplay, setCopiedDisplay] = useState("none")
   const [copiedOpacity, setCopiedOpacity] = useState(0)
   function ShowCopied() {
-    console.log("copied")
+    console.log("Copied!")
     setCopiedDisplay("block")
     setCopiedOpacity(100)
-    setTimeout(() => setCopiedOpacity(0), 250)
-    setTimeout(() => setCopiedDisplay("none"), 500)
+    setTimeout(() => setCopiedOpacity(0), 500)
+    setTimeout(() => setCopiedDisplay("none"), 1000)
   }
 
   // For random color background
@@ -99,15 +125,20 @@ function App() {
       <div className="alert-message" style={{display: copiedDisplay, opacity: copiedOpacity}} id="copied">
           Copied!
       </div>
+      <div className="alert-message" style={{display: tryAgainDisplay, opacity: tryAgainOpacity}} id="try-again"> 
+        Try again with a valid playlist ID or link
+      </div>
 
-      <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
-        <input type="text" id="playlist" name="playlist" value={playlistID} placeholder="Enter Playlist ID" onChange={event => setID(event.target.value)} required/>
-        <button type="submit"><Icon icon={bxPlay} width="100%" /></button>
-      </form>
+      <header className="header">
+        <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
+          <input type="text" id="playlist" name="playlist" value={userInput} placeholder="Enter Playlist ID or Link" onChange={event => setInput(event.target.value)} required/>
+          <button type="submit"><Icon icon={bxPlay} width="100%" /></button>
+        </form>
+        <div><a href="/">Spotlist</a></div>
+      </header>
 
       <div className="results" id="results">
-        <h3 id="playlistName">{playlistName}<small>  Playlist Name</small></h3>
-        <h3 id="playlistOwner">{playlistOwner}<small>  Published By</small></h3>
+        <h3 id="playlistName">{playlistName}<small> {'\u00A0'} By {'\u00A0'} </small>{playlistOwner}</h3>
         <table className="tracklisting" id="tracktable">
         <thead>
           <tr>
@@ -122,7 +153,7 @@ function App() {
             <tr key={index}>
               <td>
                 <div className="justify">
-                  <div id={`${index}trackname`}>{track.track.name}</div>
+                  <div id={`${index}trackname`}><a href={track.track.external_urls.spotify} target="_blank" rel="noopener noreferrer">{track.track.name}</a></div>
                   <button onClick={() => {CopyToClipboard(`${index}trackname`); ShowCopied()}}><Icon icon={bxCopy} width="20px" /></button>
                 </div>
               </td>
@@ -131,8 +162,8 @@ function App() {
                   <div id={`${index}artistname`}>
                     {track.track.artists.map((artist, index) => (
                       index === 0 ? 
-                      <span key={index}>{artist.name}</span> : 
-                      <span key={index}>, {artist.name}</span>
+                      <span key={index}><a href={track.track.artists[index].external_urls.spotify} target="_blank" rel="noopener noreferrer">{artist.name}</a></span> : 
+                      <span key={index}>, <a href={track.track.artists[index].external_urls.spotify} target="_blank" rel="noopener noreferrer">{artist.name}</a></span>
                     ))}
                   </div>
                   <button onClick={() => {CopyToClipboard(`${index}artistname`); ShowCopied()}}><Icon icon={bxCopy} width="20px" /></button>
@@ -140,7 +171,7 @@ function App() {
               </td>
               <td>
                 <div className="justify">
-                  <div id={`${index}albumname`}>{track.track.album.name}</div>
+                  <div id={`${index}albumname`}><a href={track.track.album.external_urls.spotify} target="_blank" rel="noopener noreferrer">{track.track.album.name}</a></div>
                   <button onClick={() => {CopyToClipboard(`${index}albumname`); ShowCopied()}}><Icon icon={bxCopy} width="20px" /></button>
                 </div>
               </td>
@@ -151,25 +182,37 @@ function App() {
         </table>
       </div>
 
-      <div id="tryagain"> 
-        <div>Try again</div>
-        <div>please enter a valid playlist ID</div>
-        <div className="try" style={{fontSize: "40px", marginTop: "30px", marginBottom: "20px", fontStyle: "italic"}}>Want something to get started with?</div>
-        <div className="try">Try this: 37i9dQZF1DX5Ejj0EkURtP</div>
-        <div className="try">Or this: 37i9dQZF1DXcBWIGoYBM5M</div>
-      </div>
-
       <div id="instruction">
-        <div>Get the basic information and tracklist of any Spotify playlist.</div>
-        <div className="try" style={{fontSize: "40px", marginTop: "30px", marginBottom: "20px", fontStyle: "italic"}}>Want something to get started with?</div>
-        <div className="try">Try this: 37i9dQZF1DX5Ejj0EkURtP</div>
-        <div className="try">Or this: 37i9dQZF1DXcBWIGoYBM5M</div>
+        <section id="instruction-left">
+          <div style={{fontSize: "40px", marginBottom: "5px", fontWeight: "700"}}>Access any public or private Spotify playlist using its playlist ID</div>
+          <div>For a copy-and-pastable list of track, artist, and album names.</div>
+          <div style={{fontSize: "30px", fontWeight: "700", marginTop: "30px", marginBottom: "5px", fontStyle: "italic"}}>Something to get started with?</div>
+          <table>
+            <tbody>
+              <tr>
+                <td>Today's Top Hits: {'\u00A0'} </td>
+                <td>37i9dQZF1DXcBWIGoYBM5M</td>
+              </tr>
+              <tr>
+                <td>New Music Friday: {'\u00A0'} </td>
+                <td>37i9dQZF1DX4JAvHpjipBk</td>
+              </tr>
+              <tr>
+                <td>All Out 10s: {'\u00A0'} </td>
+                <td>37i9dQZF1DX5Ejj0EkURtP</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+        <section id="instruction-right" style={{fontSize: "15px"}}>
+          <div style={{fontSize: "20px", marginBottom: "10px"}}>Spotlist is a <a href="https://github.com/law-wang/spotlist">project</a> by <a href="https://www.rence.la/">Lawrence</a> using React and Spotify API.</div>
+          <div><b>2020.08.02:</b> initial launch.</div>
+          <div><b>2020.08.16:</b> neumorphic style update.</div>
+          <div><b>2021.01.22:</b> table style overhaul.</div>
+          <div><b>2021.01.23:</b> home page style overhaul; random background color; playlist content links to Spotify; search with playlist link in addition to ID. </div>
+        </section>
       </div>
 
-      <div id="notes">
-        <div className="try">2021.01.22: style overhaul</div>
-        <div className="try">2021.01.23: style overhaul</div>
-      </div>
 
     </main>
   )
