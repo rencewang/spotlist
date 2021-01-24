@@ -84,6 +84,13 @@ function App() {
     setTimeout(() => setCopiedDisplay("none"), 1000)
   }
 
+  // For random color background
+  function RandomBackgroundColor() {
+    var hue = 1 + Math.random() * (360 - 1)
+    return `hsl(${hue}, 65%, 80%)`
+  }
+  document.body.style.backgroundColor = RandomBackgroundColor()
+
   return (
     <main className="App">
 
