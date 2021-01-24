@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Icon } from '@iconify/react'
 import bxCopy from '@iconify/icons-bx/bx-copy'
+import bxPlay from '@iconify/icons-bx/bx-play'
 import ReactGA from 'react-ga';
 
 import './App.scss'
@@ -80,8 +81,8 @@ function App() {
     console.log("copied")
     setCopiedDisplay("block")
     setCopiedOpacity(100)
-    setTimeout(() => setCopiedOpacity(0), 500)
-    setTimeout(() => setCopiedDisplay("none"), 1000)
+    setTimeout(() => setCopiedOpacity(0), 250)
+    setTimeout(() => setCopiedDisplay("none"), 500)
   }
 
   // For random color background
@@ -101,7 +102,7 @@ function App() {
 
       <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
         <input type="text" id="playlist" name="playlist" value={playlistID} placeholder="Enter Playlist ID" onChange={event => setID(event.target.value)} required/>
-        <button type="submit">Let's Go</button>
+        <button type="submit"><Icon icon={bxPlay} width="100%" /></button>
       </form>
 
       <div className="results" id="results">
