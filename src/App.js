@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react'
+
 import { Icon } from '@iconify/react'
 import bxCopy from '@iconify/icons-bx/bx-copy'
 import bxPlay from '@iconify/icons-bx/bx-play'
-import ReactGA from 'react-ga';
-
 import './App.scss'
 
 function App() {
 
-  // Google Analytics
-  ReactGA.initialize('G-C0CDR2SDRS');
-  ReactGA.pageview(window.location.pathname + window.location.search);
-
-  // Getting playlist from Spotify API
   const [userInput, setInput] = useState('')
   const [playlistID, setID] = useState('')
   const [playlistName, setName] = useState('')
@@ -21,6 +15,7 @@ function App() {
   const [tryAgainDisplay, setTryAgainDisplay] = useState("none")
   const [tryAgainOpacity, setTryAgainOpacity] = useState(100)
 
+  // Parse input string for playlist ID
   useEffect(
     () => {
       if (userInput.match("https://open.spotify.com/playlist/")) {
@@ -36,22 +31,22 @@ function App() {
 
   const GetPlaylist = event => {
     event.preventDefault()
+
+    // Spotify API call
     let request = require('request')
     const client_id = '3db56f3a8f864d0f82169d8d74dea551'
     const client_secret = '95dd0815b84541ac86fe502139f3f91d'
     const authOptions = {
       url: 'https://accounts.spotify.com/api/token',
-      headers: {
-        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-      },
-      form: {
-        grant_type: 'client_credentials'
-      },
+      headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+      form: { grant_type: 'client_credentials' },
       json: true
     }
+
     request.post(authOptions, function(error, response, body) {
       if (!error && response.statusCode === 200) {
         let token = body.access_token
+        console.log(body)
         let options = {
           url: 'https://api.spotify.com/v1/playlists/' + playlistID,
           headers: {
@@ -60,28 +55,25 @@ function App() {
           json: true
         }
         request.get(options, function(error, response, body) {
-          console.log(response)
-          if (typeof body === 'object' && body !== null) {
-            if (body.name !== undefined) {
-              setName(body.name)
-              document.getElementById("results").style.display = "block"
-              document.getElementById("instruction").style.display = "none"
-            } else {
-              console.log("Try Again.")
-              setTryAgainDisplay("block")
-              setTryAgainOpacity(100)
-              setTimeout(() => setTryAgainOpacity(0), 250)
-              setTimeout(() => setTryAgainDisplay("none"), 500)
-            }
-            if (body.owner !== undefined) {setOwner(body.owner.display_name)}
-            if (body.tracks !== undefined) {setTrack(body.tracks.items)}
-          }
+          console.log(body)
           if (response.statusCode === 404) {
             console.log("Try Again.")
             setTryAgainDisplay("block")
             setTryAgainOpacity(100)
             setTimeout(() => setTryAgainOpacity(0), 250)
             setTimeout(() => setTryAgainDisplay("none"), 500)
+          } else {
+            document.getElementById("results").style.display = "block"
+            document.getElementById("instruction").style.display = "none"
+            if (body.name !== undefined) { 
+              setName(body.name) 
+            }
+            if (body.owner !== undefined) { 
+              setOwner(body.owner.display_name) 
+            }
+            if (body.tracks !== undefined) {
+              setTrack(body.tracks.items)
+            }
           }
         })
       }
@@ -184,7 +176,7 @@ function App() {
 
       <div id="instruction">
         <section id="instruction-left">
-          <div style={{fontSize: "40px", marginBottom: "5px", fontWeight: "700"}}>Access any public or private Spotify playlist using its playlist ID</div>
+          <div style={{fontSize: "40px", marginBottom: "5px", fontWeight: "700"}}>Access any Spotify playlist using its playlist ID</div>
           <div>For a copy-and-pastable list of track, artist, and album names.</div>
           <div style={{fontSize: "30px", fontWeight: "700", marginTop: "30px", marginBottom: "5px", fontStyle: "italic"}}>Something to get started with?</div>
           <table>
