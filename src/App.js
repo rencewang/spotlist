@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
 import bxCopy from '@iconify/icons-bx/bx-copy'
 import bxPlay from '@iconify/icons-bx/bx-play'
-import './App.scss'
 
 import Instruction from "./instruction"
+import './App.scss'
 
 function App() {
 
@@ -24,19 +24,17 @@ function App() {
     [userInput],
   )
 
+  // Making API calls to get playlist information
   const [playlistID, setID] = useState('')
   const [playlistName, setName] = useState('')
   const [playlistOwner, setOwner] = useState('')
   const [playlistTracks, setTrack] = useState([])
   const [tryAgainDisplay, setTryAgainDisplay] = useState("none")
   const [tryAgainOpacity, setTryAgainOpacity] = useState(100)
-  const [playlistCurrentLinkState, setPlaylistLink] = useState('')
-  const [sessionToken, setToken] = useState('')
-  const [playlistPage, setPage] = useState(1)
+
   const GetPlaylist = event => {
     event.preventDefault()
 
-    // Spotify API call
     let request = require('request')
     const client_id = '3db56f3a8f864d0f82169d8d74dea551'
     const client_secret = '2e116c197d6e4f1da189f47254d99afb'
@@ -50,8 +48,7 @@ function App() {
     request.post(authOptions, function(error, response, body) {
 
       if (!error && response.statusCode === 200) {
-
-        setToken(body.access_token)
+        // set the initial options for the first call
         let token = body.access_token
         let options = {
           url: 'https://api.spotify.com/v1/playlists/' + playlistID,
@@ -60,17 +57,8 @@ function App() {
           },
           json: true
         }
-        console.log(body)
 
         request.get(options, function(error, response, body) {
-
-          console.log(body)
-          let playlistCurrentLink = 'https://api.spotify.com/v1/playlists/' + playlistID
-          console.log(playlistCurrentLink)
-          console.log(playlistCurrentLinkState)
-          setPage(3)
-          console.log(playlistPage)
-
           if (response.statusCode === 404) {
 
             // prompt error message
@@ -90,56 +78,28 @@ function App() {
             setName(body.name) 
             setOwner(body.owner.display_name) 
 
-            // if (body.name !== undefined) { // set the playlist name
-            //   setName(body.name) 
-            // }
-            // if (body.owner !== undefined) { // set the playlist owner's name
-            //   setOwner(body.owner.display_name) 
-            // }
+            // for loop to grab paginated track list by making multiple calls
+            for (let i = 0; i < Math.ceil(body.tracks.total / 100); i++) {
 
-            // if (body.tracks !== undefined) {
-            //   console.log(body.tracks)
+              let newOptions = {
+                url: 'https://api.spotify.com/v1/playlists/' + playlistID + '/tracks?offset=' + i*100 + '&limit=100',
+                headers: {
+                  'Authorization': 'Bearer ' + token
+                },
+                json: true
+              }
 
-                let trackCalls = Math.ceil(body.tracks.total / 100)
-                console.log(trackCalls)
-                // setTrack(body.tracks.items)
+              request.get(newOptions, function(error, response, body) {
+                // console.log(body)
+                setTrack(playlistTracks => [...playlistTracks, ...body.items])
+              })
+            }
 
-                for (let i = 0; i < trackCalls; i++) {
-
-                  let newOptions = {
-                    url: 'https://api.spotify.com/v1/playlists/' + playlistID + '/tracks?offset=' + i*100 + '&limit=100',
-                    headers: {
-                      'Authorization': 'Bearer ' + token
-                    },
-                    json: true
-                  }
-
-                  request.get(newOptions, function(error, response, body) {
-                    
-                    console.log(body)
-                    setTrack(playlistTracks => [...playlistTracks, ...body.items])
-
-                  })
-                }
-
-              // } else {
-              //   // if there are no next items, set Track state
-              //   setTrack(body.tracks.items)
-              // }
-              
-              console.log(playlistTracks)
-              // playlistArray = body.tracks.items
-              // playlistArray = playlistArray.concat(body.tracks.items)
-              // setTrack(playlistArray)
-              // console.log(body.tracks.items)
-              // console.log(playlistArray)
-            // }
           }
         })
+
       }
     })
-    // console.log(playlistTracks)
-    // console.log(playlistID)
   }
 
   // For copy to clipboard button
