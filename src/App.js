@@ -5,17 +5,12 @@ import bxCopy from '@iconify/icons-bx/bx-copy'
 import bxPlay from '@iconify/icons-bx/bx-play'
 import './App.scss'
 
+import Instruction from "./instruction"
+
 function App() {
 
-  const [userInput, setInput] = useState('')
-  const [playlistID, setID] = useState('')
-  const [playlistName, setName] = useState('')
-  const [playlistOwner, setOwner] = useState('')
-  const [playlistTracks, setTrack] = useState([])
-  const [tryAgainDisplay, setTryAgainDisplay] = useState("none")
-  const [tryAgainOpacity, setTryAgainOpacity] = useState(100)
-
   // Parse input string for playlist ID
+  const [userInput, setInput] = useState('')
   useEffect(
     () => {
       if (userInput.match("https://open.spotify.com/playlist/")) {
@@ -29,6 +24,15 @@ function App() {
     [userInput],
   )
 
+  const [playlistID, setID] = useState('')
+  const [playlistName, setName] = useState('')
+  const [playlistOwner, setOwner] = useState('')
+  const [playlistTracks, setTrack] = useState([])
+  const [tryAgainDisplay, setTryAgainDisplay] = useState("none")
+  const [tryAgainOpacity, setTryAgainOpacity] = useState(100)
+  const [playlistCurrentLinkState, setPlaylistLink] = useState('')
+  const [sessionToken, setToken] = useState('')
+  const [playlistPage, setPage] = useState(1)
   const GetPlaylist = event => {
     event.preventDefault()
 
@@ -44,9 +48,11 @@ function App() {
     }
 
     request.post(authOptions, function(error, response, body) {
+
       if (!error && response.statusCode === 200) {
+
+        setToken(body.access_token)
         let token = body.access_token
-        console.log(body)
         let options = {
           url: 'https://api.spotify.com/v1/playlists/' + playlistID,
           headers: {
@@ -54,32 +60,86 @@ function App() {
           },
           json: true
         }
+        console.log(body)
+
         request.get(options, function(error, response, body) {
+
           console.log(body)
+          let playlistCurrentLink = 'https://api.spotify.com/v1/playlists/' + playlistID
+          console.log(playlistCurrentLink)
+          console.log(playlistCurrentLinkState)
+          setPage(3)
+          console.log(playlistPage)
+
           if (response.statusCode === 404) {
+
+            // prompt error message
             console.log("Try Again.")
             setTryAgainDisplay("block")
             setTryAgainOpacity(100)
             setTimeout(() => setTryAgainOpacity(0), 250)
             setTimeout(() => setTryAgainDisplay("none"), 500)
+
           } else {
+
+            // display the list of results
             document.getElementById("results").style.display = "block"
             document.getElementById("instruction").style.display = "none"
-            if (body.name !== undefined) { 
-              setName(body.name) 
-            }
-            if (body.owner !== undefined) { 
-              setOwner(body.owner.display_name) 
-            }
-            if (body.tracks !== undefined) {
-              setTrack(body.tracks.items)
-            }
+
+            // set the playlist name and creator
+            setName(body.name) 
+            setOwner(body.owner.display_name) 
+
+            // if (body.name !== undefined) { // set the playlist name
+            //   setName(body.name) 
+            // }
+            // if (body.owner !== undefined) { // set the playlist owner's name
+            //   setOwner(body.owner.display_name) 
+            // }
+
+            // if (body.tracks !== undefined) {
+            //   console.log(body.tracks)
+
+                let trackCalls = Math.ceil(body.tracks.total / 100)
+                console.log(trackCalls)
+                // setTrack(body.tracks.items)
+
+                for (let i = 0; i < trackCalls; i++) {
+
+                  let newOptions = {
+                    url: 'https://api.spotify.com/v1/playlists/' + playlistID + '/tracks?offset=' + i*100 + '&limit=100',
+                    headers: {
+                      'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                  }
+
+                  request.get(newOptions, function(error, response, body) {
+                    
+                    console.log(body)
+                    setTrack(playlistTracks => [...playlistTracks, ...body.items])
+
+                  })
+                }
+
+              // } else {
+              //   // if there are no next items, set Track state
+              //   setTrack(body.tracks.items)
+              // }
+              
+              console.log(playlistTracks)
+              // playlistArray = body.tracks.items
+              // playlistArray = playlistArray.concat(body.tracks.items)
+              // setTrack(playlistArray)
+              // console.log(body.tracks.items)
+              // console.log(playlistArray)
+            // }
           }
         })
       }
     })
-    console.log(playlistTracks)
-    console.log(playlistID)
+    // console.log(playlistTracks)
+    // console.log(playlistID)
   }
 
   // For copy to clipboard button
@@ -106,14 +166,14 @@ function App() {
   // For random color background
   function RandomBackgroundColor() {
     var hue = 1 + Math.random() * (360 - 1)
-    return `hsl(${hue}, 65%, 80%)`
+    return `hsl(${hue}, 30%, 80%)`
   }
   const [randomBackgroundColor] = useState(RandomBackgroundColor())
   document.body.style.backgroundColor = randomBackgroundColor
 
   return (
     <main className="App">
-
+      
       <div className="alert-message" style={{display: copiedDisplay, opacity: copiedOpacity}} id="copied">
           Copied!
       </div>
@@ -173,38 +233,8 @@ function App() {
         </tbody>
         </table>
       </div>
-
-      <div id="instruction">
-        <section id="instruction-left">
-          <div style={{fontSize: "40px", marginBottom: "5px", fontWeight: "700"}}>Access any Spotify playlist using its playlist ID or link</div>
-          <div>For a copy-and-pastable list of track, artist, and album names.</div>
-          <div style={{fontSize: "30px", fontWeight: "700", marginTop: "30px", marginBottom: "5px", fontStyle: "italic"}}>Something to get started with?</div>
-          <table>
-            <tbody>
-              <tr>
-                <td>Today's Top Hits: {'\u00A0'} </td>
-                <td>37i9dQZF1DXcBWIGoYBM5M</td>
-              </tr>
-              <tr>
-                <td>New Music Friday: {'\u00A0'} </td>
-                <td>37i9dQZF1DX4JAvHpjipBk</td>
-              </tr>
-              <tr>
-                <td>All Out 10s: {'\u00A0'} </td>
-                <td>37i9dQZF1DX5Ejj0EkURtP</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-        <section id="instruction-right" style={{fontSize: "15px"}}>
-          <div style={{fontSize: "20px", marginBottom: "10px"}}>Spotlist is a <a href="https://github.com/law-wang/spotlist">project</a> by <a href="https://www.rence.la/">Lawrence</a> using React and Spotify API.</div>
-          <div><b>2020.08.02:</b> initial launch.</div>
-          <div><b>2020.08.16:</b> neumorphic style update.</div>
-          <div><b>2021.01.22:</b> table style overhaul.</div>
-          <div><b>2021.01.23:</b> home page style overhaul; random background color; playlist content links to Spotify; search with playlist link in addition to ID. </div>
-        </section>
-      </div>
-
+      
+      <Instruction />
 
     </main>
   )
