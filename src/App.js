@@ -176,7 +176,7 @@ function App() {
 
       <div id="instruction">
         <section id="instruction-left">
-          <div style={{fontSize: "40px", marginBottom: "5px", fontWeight: "700"}}>Access any Spotify playlist using its playlist ID</div>
+          <div style={{fontSize: "40px", marginBottom: "5px", fontWeight: "700"}}>Access any Spotify playlist using its playlist ID or link</div>
           <div>For a copy-and-pastable list of track, artist, and album names.</div>
           <div style={{fontSize: "30px", fontWeight: "700", marginTop: "30px", marginBottom: "5px", fontStyle: "italic"}}>Something to get started with?</div>
           <table>
