@@ -34,6 +34,7 @@ function App() {
 
   const GetPlaylist = event => {
     event.preventDefault()
+    setTrack([])
 
     let request = require('request')
     const client_id = '3db56f3a8f864d0f82169d8d74dea551'
@@ -91,6 +92,7 @@ function App() {
 
               request.get(newOptions, function(error, response, body) {
                 // console.log(body)
+                // console.log(response)
                 setTrack(playlistTracks => [...playlistTracks, ...body.items])
               })
             }
