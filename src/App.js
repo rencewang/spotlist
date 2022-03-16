@@ -31,14 +31,16 @@ function App() {
   const [playlistTracks, setTrack] = useState([])
   const [tryAgainDisplay, setTryAgainDisplay] = useState("none")
   const [tryAgainOpacity, setTryAgainOpacity] = useState(100)
+  const client_id = process.env.CLINET_ID
+  const client_secret = process.env.CLIENT_SECRET
+  console.log(client_id)
 
   const GetPlaylist = event => {
     event.preventDefault()
     setTrack([])
 
     let request = require('request')
-    const client_id = process.env.CLIENT_ID
-    const client_secret = process.env.CLIENT_SECRET
+    
     const authOptions = {
       url: 'https://accounts.spotify.com/api/token',
       headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
