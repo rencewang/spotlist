@@ -37,8 +37,8 @@ function App() {
     setTrack([])
 
     let request = require('request')
-    const client_id = '3db56f3a8f864d0f82169d8d74dea551'
-    const client_secret = '2e116c197d6e4f1da189f47254d99afb'
+    const client_id = process.env.CLIENT_ID
+    const client_secret = process.env.CLIENT_SECRET
     const authOptions = {
       url: 'https://accounts.spotify.com/api/token',
       headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
