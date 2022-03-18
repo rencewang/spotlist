@@ -5,7 +5,7 @@ import bxCopy from '@iconify/icons-bx/bx-copy'
 import bxPlay from '@iconify/icons-bx/bx-play'
 
 import Instruction from "./instruction"
-import './App.scss'
+// import './App.scss'
 
 function App() {
 
@@ -82,7 +82,7 @@ function App() {
             setOwner(body.owner.display_name) 
 
             // for loop to grab paginated track list by making multiple calls
-            for (let i = 0; i < Math.ceil(body.tracks.total / 100); i++) {
+            for (let i = 0; i < Math.ceil(body.tracks.total / 100)+1; i++) {
 
               let newOptions = {
                 url: 'https://api.spotify.com/v1/playlists/' + playlistID + '/tracks?offset=' + i*100 + '&limit=100',
