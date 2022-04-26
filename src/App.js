@@ -5,24 +5,22 @@ import bxCopy from '@iconify/icons-bx/bx-copy'
 import bxPlay from '@iconify/icons-bx/bx-play'
 
 import Instruction from "./instruction"
-// import './App.scss'
+import './App.scss'
 
 function App() {
 
   // Parse input string for playlist ID
   const [userInput, setInput] = useState('')
-  useEffect(
-    () => {
-      if (userInput.match("https://open.spotify.com/playlist/")) {
-        setID(userInput.slice(34))
-      } else if (userInput.match("open.spotify.com/playlist/")) {
-        setID(userInput.slice(26))
-      } else {
-      setID(userInput)
+  useEffect(() => {
+      let slicedURL = userInput
+      if (userInput.includes("/playlist/")) {
+        slicedURL = userInput.split("/playlist/")[1]
       }
-    },
-    [userInput],
-  )
+      if (slicedURL.includes("?")) {
+        slicedURL = slicedURL.substring(0, slicedURL.indexOf("?"))
+      }
+      setID(slicedURL)
+  }, [userInput])
 
   // Making API calls to get playlist information
   const [playlistID, setID] = useState('')
@@ -169,7 +167,7 @@ function App() {
             <tr key={index}>
               <td>
                 <div className="justify">
-                  <div id={`${index}trackname`}><a href={track.track.external_urls.spotify} target="_blank" rel="noopener noreferrer">{track.track.name}</a></div>
+                  <div id={`${index}trackname`}><a href={track.track.external_urls.spotify} target="_blank" rel="noopener noreferrer"> {index} {track.track.name}</a></div>
                   <button onClick={() => {CopyToClipboard(`${index}trackname`); ShowCopied()}}><Icon icon={bxCopy} width="20px" /></button>
                 </div>
               </td>

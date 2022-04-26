@@ -8,11 +8,11 @@ function Main() {
 
     return (
         <main>
-            <Header />
+            {/* <Header />
 
-            <Table />
-
-            
+            <Table /> */}
         </main>
     )
 }
+
+export default Main
