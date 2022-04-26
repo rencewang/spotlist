@@ -36,10 +36,17 @@ a {
 }
 
 header {
-  width: 100%;
+    z-index: 999;
+    position: fixed;
+    height: 50px;
+    width: 100%;
+    top: 0;
+    left: 0;
+
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  background-color: #FFFDF7;
   > div {
     font-size: 2em;
     font-weight: 700;
@@ -79,6 +86,20 @@ header {
 ::-ms-input-placeholder { /* Microsoft Edge */
   color: #1d1d1d;
   opacity: 0.8;
+}
+
+footer {
+    z-index: 999;
+    position: fixed;
+    height: 50px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    background-color: #FFFDF7;
+    border-top: 2px solid black;
+    div {
+        padding: 10px 20px;
+    }
 }
 
 .results {

@@ -7,6 +7,11 @@ import bxPlay from '@iconify/icons-bx/bx-play'
 import Instruction from "./instruction"
 import './App.scss'
 
+const process = require('process')
+const axios = require('axios')
+const qs = require('qs')
+
+
 function App() {
 
   // Parse input string for playlist ID
@@ -33,9 +38,10 @@ function App() {
   const client_secret = process.env.CLIENT_SECRET
   console.log(client_id)
 
-  const GetPlaylist = event => {
+  const GetPlaylist = async (event) => {
     event.preventDefault()
     setTrack([])
+    playlistHandler()
 
     let request = require('request')
     
@@ -104,6 +110,47 @@ function App() {
     })
   }
 
+  const playlistHandler = async function (event) {
+
+    const id = process.env.CLIENT_ID
+    const secret = process.env.CLIENT_SECRET
+    console.log(id)
+    console.log(secret)
+    const tokenURL = 'https://accounts.spotify.com/api/token'
+    const data = qs.stringify({'grant_type':'client_credentials'})
+    const auth = Buffer.from(`${id}:${secret}`, 'utf-8').toString('base64')
+  
+    const getAuth = async () => {
+      try {
+        const response = await axios.post(tokenURL, data, {
+          headers: {
+            'Authorization': `Basic ${auth}`,
+            'Content-Type': 'application/x-www-form-urlencoded' 
+          }
+        })
+        console.log(response)
+        return response.data.access_token
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    
+    const token = await getAuth()
+    const callURL = `https://api.spotify.com/v1/playlists/${playlistID}`
+  
+    try {
+      const response = await axios.get(callURL, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      console.log(response)
+      return response.data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   // For copy to clipboard button
   function CopyToClipboard(element) {
     var range = document.createRange()
@@ -143,7 +190,7 @@ function App() {
         Try again with a valid playlist ID or link
       </div>
 
-      <header className="header">
+      <header>
         <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
           <input type="text" id="playlist" name="playlist" value={userInput} placeholder="Enter Playlist ID or Link" onChange={event => setInput(event.target.value)} required/>
           <button type="submit"><Icon icon={bxPlay} width="100%" /></button>
@@ -197,6 +244,10 @@ function App() {
       </div>
       
       <Instruction />
+
+      <footer>
+        <div>Built by Lawrence</div>
+      </footer>
 
     </main>
   )
