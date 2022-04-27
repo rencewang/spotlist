@@ -45,6 +45,8 @@ function App() {
   // Style states
   const [tryAgainDisplay, setTryAgainDisplay] = useState("none")
   const [tryAgainOpacity, setTryAgainOpacity] = useState(100)
+  const [copiedDisplay, setCopiedDisplay] = useState("none")
+  const [copiedOpacity, setCopiedOpacity] = useState(0)
 
   // Making API calls to get playlist information
   const GetPlaylist = async (event) => {
@@ -82,6 +84,8 @@ function App() {
           const data = await page.data
 
           setTrack(playlistTracks => [...playlistTracks, ...data.items])
+          console.log(playlistTracks)
+          console.log(TracksToCSV(playlistTracks))
         } catch (error) {
           // error occurred in pagination calls
           console.log(error)
@@ -109,8 +113,6 @@ function App() {
   }
 
   // For "Copied" alert
-  const [copiedDisplay, setCopiedDisplay] = useState("none")
-  const [copiedOpacity, setCopiedOpacity] = useState(0)
   function ShowCopied() {
     console.log("Copied!")
     setCopiedDisplay("block")
@@ -126,6 +128,28 @@ function App() {
   }
   const [randomBackgroundColor] = useState(RandomBackgroundColor())
   document.body.style.backgroundColor = randomBackgroundColor
+
+  const TracksToCSV = (tracks) => {
+    let csvTracks = tracks.map(row => 
+      row.track.name + ',"' + row.track.artists.map(artist => artist.name).join(', ') + '",' + row.track.album.name + ',' + row.added_at
+    ).join('\r\n')
+    return ("track_name, artists, album_name, added_at \r\n" + csvTracks)
+  }
+
+  const DownloadCSV = (event) => {
+    event.preventDefault()
+    
+    // Create a blob
+    var blob = new Blob([TracksToCSV(playlistTracks)], { type: 'text/csv;charset=utf-8;' })
+    var url = URL.createObjectURL(blob)
+  
+    // Create a link to download it
+    var pom = document.createElement('a')
+    pom.href = url
+    pom.setAttribute('download', 'spotlist-export.csv')
+    pom.click()
+  }
+
 
   return (
     <main className="App">
@@ -144,6 +168,10 @@ function App() {
         </form>
         <div><a href="/">Spotlist</a></div>
       </header>
+
+      <button onClick={(e) => DownloadCSV(e)} id='download'>
+        download
+      </button>
 
       <div className="results" id="results">
         <h3 id="playlistName">{playlistName}<small> {'\u00A0'} By {'\u00A0'} </small>{playlistOwner}</h3>
