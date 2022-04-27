@@ -7,15 +7,14 @@ import bxPlay from '@iconify/icons-bx/bx-play'
 import Instruction from "./instruction"
 import './App.scss'
 
-const process = require('process')
 const axios = require('axios')
-const qs = require('qs')
-
 
 function App() {
 
   // Parse input string for playlist ID
   const [userInput, setInput] = useState('')
+  const [playlistID, setID] = useState('')
+
   useEffect(() => {
       let slicedURL = userInput
       if (userInput.includes("/playlist/")) {
@@ -27,127 +26,75 @@ function App() {
       setID(slicedURL)
   }, [userInput])
 
-  // Making API calls to get playlist information
-  const [playlistID, setID] = useState('')
+  // Retrieve access token through Netlify function
+  const GetAccessToken = async () => {
+    try {
+      const response = await fetch(`/.netlify/functions/token-hider`)
+      const data = await response.json()
+      return data.access_token
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  // Playlist information states
   const [playlistName, setName] = useState('')
   const [playlistOwner, setOwner] = useState('')
   const [playlistTracks, setTrack] = useState([])
+
+  // Style states
   const [tryAgainDisplay, setTryAgainDisplay] = useState("none")
   const [tryAgainOpacity, setTryAgainOpacity] = useState(100)
-  const client_id = process.env.CLINET_ID
-  const client_secret = process.env.CLIENT_SECRET
-  console.log(client_id)
 
+  // Making API calls to get playlist information
   const GetPlaylist = async (event) => {
     event.preventDefault()
     setTrack([])
-    playlistHandler()
 
-    let request = require('request')
-    
-    const authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-      form: { grant_type: 'client_credentials' },
-      json: true
-    }
-
-    request.post(authOptions, function(error, response, body) {
-
-      if (!error && response.statusCode === 200) {
-        // set the initial options for the first call
-        let token = body.access_token
-        let options = {
-          url: 'https://api.spotify.com/v1/playlists/' + playlistID,
-          headers: {
-            'Authorization': 'Bearer ' + token
-          },
-          json: true
-        }
-
-        request.get(options, function(error, response, body) {
-          if (response.statusCode === 404) {
-
-            // prompt error message
-            console.log("Try Again.")
-            setTryAgainDisplay("block")
-            setTryAgainOpacity(100)
-            setTimeout(() => setTryAgainOpacity(0), 250)
-            setTimeout(() => setTryAgainDisplay("none"), 500)
-
-          } else {
-
-            // display the list of results
-            document.getElementById("results").style.display = "block"
-            document.getElementById("instruction").style.display = "none"
-
-            // set the playlist name and creator
-            setName(body.name) 
-            setOwner(body.owner.display_name) 
-
-            // for loop to grab paginated track list by making multiple calls
-            for (let i = 0; i < Math.ceil(body.tracks.total / 100)+1; i++) {
-
-              let newOptions = {
-                url: 'https://api.spotify.com/v1/playlists/' + playlistID + '/tracks?offset=' + i*100 + '&limit=100',
-                headers: {
-                  'Authorization': 'Bearer ' + token
-                },
-                json: true
-              }
-
-              request.get(newOptions, function(error, response, body) {
-                // console.log(body)
-                // console.log(response)
-                setTrack(playlistTracks => [...playlistTracks, ...body.items])
-              })
-            }
-
-          }
-        })
-
-      }
-    })
-  }
-
-  const playlistHandler = async function (event) {
-
-    const id = process.env.CLIENT_ID
-    const secret = process.env.CLIENT_SECRET
-    console.log(id)
-    console.log(secret)
-    const tokenURL = 'https://accounts.spotify.com/api/token'
-    const data = qs.stringify({'grant_type':'client_credentials'})
-    const auth = Buffer.from(`${id}:${secret}`, 'utf-8').toString('base64')
-  
-    const getAuth = async () => {
-      try {
-        const response = await axios.post(tokenURL, data, {
-          headers: {
-            'Authorization': `Basic ${auth}`,
-            'Content-Type': 'application/x-www-form-urlencoded' 
-          }
-        })
-        console.log(response)
-        return response.data.access_token
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    
-    const token = await getAuth()
+    const token = await GetAccessToken()
     const callURL = `https://api.spotify.com/v1/playlists/${playlistID}`
-  
+
     try {
       const response = await axios.get(callURL, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       })
-      console.log(response)
-      return response.data
+      const data = await response.data
+      
+      // set the playlist name and creator
+      setName(data.name) 
+      setOwner(data.owner.display_name) 
+
+      document.getElementById("results").style.display = "block"
+      document.getElementById("instruction").style.display = "none"
+
+      // set tracklist while taking care of pagination
+      for (let i = 0; i < Math.ceil(response.data.tracks.total / 100) + 1; i++) {
+        const newURL = `https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${i*100}&limit=100`
+
+        try {
+          const page = await axios.get(newURL, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+          const data = await page.data
+
+          setTrack(playlistTracks => [...playlistTracks, ...data.items])
+        } catch (error) {
+          // error occurred in pagination calls
+          console.log(error)
+        }
+      }
+
     } catch (error) {
-      console.log(error)
+      // prompt error message
+      console.log("Try Again.", error)
+      setTryAgainDisplay("block")
+      setTryAgainOpacity(100)
+      setTimeout(() => setTryAgainOpacity(0), 250)
+      setTimeout(() => setTryAgainDisplay("none"), 500)
     }
   }
 
