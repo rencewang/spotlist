@@ -4,7 +4,7 @@ import bxCopy from '@iconify/icons-bx/bx-copy'
 
 import './App.scss'
 
-function Results( props ) {
+const Results = (props) => {
     const {name, owner, tracks, ShowAlert, copiedRef} = props
 
     const TracksToCSV = (tracks) => {

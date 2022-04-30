@@ -8,7 +8,7 @@ import './App.scss'
 
 const axios = require('axios')
 
-function App() {
+const App = () => {
 
   const [userInput, setInput] = useState('')
   const [playlistID, setID] = useState('')  
@@ -43,12 +43,12 @@ function App() {
   }
 
   // Making API calls to get playlist information
-  const GetPlaylist = async (event) => {
+  const GetPlaylist = async (event, ID) => {
     event.preventDefault()
     setTrack([])
 
     const token = await GetAccessToken()
-    const callURL = `https://api.spotify.com/v1/playlists/${playlistID}`
+    const callURL = `https://api.spotify.com/v1/playlists/${ID}`
 
     try {
       const response = await axios.get(callURL, {
@@ -67,7 +67,7 @@ function App() {
 
       // set tracklist while taking care of pagination
       for (let i = 0; i < Math.ceil(response.data.tracks.total / 100) + 1; i++) {
-        const newURL = `https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${i*100}&limit=100`
+        const newURL = `https://api.spotify.com/v1/playlists/${ID}/tracks?offset=${i*100}&limit=100`
 
         try {
           const page = await axios.get(newURL, {
@@ -112,7 +112,7 @@ function App() {
 
       <header>
         <h2><a href="/">Spotlist</a></h2>
-        <form onSubmit={GetPlaylist} autoComplete="off">
+        <form onSubmit={event => GetPlaylist(event, playlistID)} autoComplete="off">
           <input type="text" id="playlist" name="playlist" value={userInput} placeholder="Enter Playlist ID or Link" onChange={event => setInput(event.target.value)} required/>
           <button type="submit"><Icon icon={bxPlay} width="100%" /></button>
         </form>
@@ -120,7 +120,7 @@ function App() {
 
       <div id="content">
         <Results name={playlistName} owner={playlistOwner} tracks={playlistTracks} ShowAlert={ShowAlert} copiedRef={copied} />
-        <Instruction />
+        <Instruction GetPlaylist={GetPlaylist} setInput={setInput} />
       </div>
     </main>
   )

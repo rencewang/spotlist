@@ -1,31 +1,18 @@
 import React from "react"
 import './App.scss'
 
-export default () => {
+export default (props) => {
+  const {GetPlaylist, setInput} = props
     return (
       <section id="instruction">
         <div>
-        <h1>Access any Spotify playlist using its playlist ID or link</h1>
-          <h3>For a copy-and-pastable list of track, artist, and album names.</h3>
+          <h1>Download Spotify playlist information using its playlist ID or link</h1>
+          <p>Get a copy-and-pastable list of track, artist, and album names</p>
 
-          <div style={{fontSize: "30px", fontWeight: "700", marginTop: "30px", marginBottom: "5px", fontStyle: "italic"}}>Try these playlists?</div>
-
-          <table>
-            <tbody>
-              <tr>
-                <td>Today's Top Hits: {'\u00A0'} </td>
-                <td>37i9dQZF1DXcBWIGoYBM5M</td>
-              </tr>
-              <tr>
-                <td>New Music Friday: {'\u00A0'} </td>
-                <td>37i9dQZF1DX4JAvHpjipBk</td>
-              </tr>
-              <tr>
-                <td>All Out 10s: {'\u00A0'} </td>
-                <td>37i9dQZF1DX5Ejj0EkURtP</td>
-              </tr>
-            </tbody>
-          </table>
+          <h2>Try these playlists?</h2>
+          <button onClick={event => {GetPlaylist(event, "37i9dQZF1DXcBWIGoYBM5M"); setInput("37i9dQZF1DXcBWIGoYBM5M")}}>Today's Top Hits</button>
+          <button onClick={event => {GetPlaylist(event, "37i9dQZF1DX4JAvHpjipBk"); setInput("37i9dQZF1DX4JAvHpjipBk")}}>New Music Friday</button>
+          <button onClick={event => {GetPlaylist(event, "4h0CNjEQobeT4W9hPl3YiF"); setInput("4h0CNjEQobeT4W9hPl3YiF")}}>One of my playlists</button>
         </div>
       
         <footer>
