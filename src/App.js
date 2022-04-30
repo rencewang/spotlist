@@ -5,6 +5,7 @@ import bxCopy from '@iconify/icons-bx/bx-copy'
 import bxPlay from '@iconify/icons-bx/bx-play'
 
 import Instruction from "./instruction"
+import Results from './results'
 import './App.scss'
 
 const axios = require('axios')
@@ -85,7 +86,6 @@ function App() {
 
           setTrack(playlistTracks => [...playlistTracks, ...data.items])
           console.log(playlistTracks)
-          console.log(TracksToCSV(playlistTracks))
         } catch (error) {
           // error occurred in pagination calls
           console.log(error)
@@ -129,27 +129,6 @@ function App() {
   const [randomBackgroundColor] = useState(RandomBackgroundColor())
   document.body.style.backgroundColor = randomBackgroundColor
 
-  const TracksToCSV = (tracks) => {
-    let csvTracks = tracks.map(row => 
-      row.track.name + ',"' + row.track.artists.map(artist => artist.name).join(', ') + '",' + row.track.album.name + ',' + row.added_at
-    ).join('\r\n')
-    return ("track_name, artists, album_name, added_at \r\n" + csvTracks)
-  }
-
-  const DownloadCSV = (event) => {
-    event.preventDefault()
-    
-    // Create a blob
-    var blob = new Blob([TracksToCSV(playlistTracks)], { type: 'text/csv;charset=utf-8;' })
-    var url = URL.createObjectURL(blob)
-  
-    // Create a link to download it
-    var pom = document.createElement('a')
-    pom.href = url
-    pom.setAttribute('download', 'spotlist-export.csv')
-    pom.click()
-  }
-
 
   return (
     <main className="App">
@@ -162,68 +141,15 @@ function App() {
       </div>
 
       <header>
-        <form onSubmit={GetPlaylist} autoComplete="off" className="trackIDform">
+        <h2><a href="/">Spotlist</a></h2>
+        <form onSubmit={GetPlaylist} autoComplete="off">
           <input type="text" id="playlist" name="playlist" value={userInput} placeholder="Enter Playlist ID or Link" onChange={event => setInput(event.target.value)} required/>
           <button type="submit"><Icon icon={bxPlay} width="100%" /></button>
         </form>
-        <div><a href="/">Spotlist</a></div>
       </header>
 
-      <button onClick={(e) => DownloadCSV(e)} id='download'>
-        download
-      </button>
-
-      <div className="results" id="results">
-        <h3 id="playlistName">{playlistName}<small> {'\u00A0'} By {'\u00A0'} </small>{playlistOwner}</h3>
-        <table className="tracklisting" id="tracktable">
-        <thead>
-          <tr>
-            <th>Track</th>
-            <th>Artist</th>
-            <th>Album</th>
-            <th>Added on</th>
-          </tr>
-        </thead>
-        <tbody>
-          {playlistTracks.map((track, index) => (
-            <tr key={index}>
-              <td>
-                <div className="justify">
-                  <div id={`${index}trackname`}><a href={track.track.external_urls.spotify} target="_blank" rel="noopener noreferrer"> {index} {track.track.name}</a></div>
-                  <button onClick={() => {CopyToClipboard(`${index}trackname`); ShowCopied()}}><Icon icon={bxCopy} width="20px" /></button>
-                </div>
-              </td>
-              <td>
-                <div className="justify">
-                  <div id={`${index}artistname`}>
-                    {track.track.artists.map((artist, index) => (
-                      index === 0 ? 
-                      <span key={index}><a href={track.track.artists[index].external_urls.spotify} target="_blank" rel="noopener noreferrer">{artist.name}</a></span> : 
-                      <span key={index}>, <a href={track.track.artists[index].external_urls.spotify} target="_blank" rel="noopener noreferrer">{artist.name}</a></span>
-                    ))}
-                  </div>
-                  <button onClick={() => {CopyToClipboard(`${index}artistname`); ShowCopied()}}><Icon icon={bxCopy} width="20px" /></button>
-                </div>
-              </td>
-              <td>
-                <div className="justify">
-                  <div id={`${index}albumname`}><a href={track.track.album.external_urls.spotify} target="_blank" rel="noopener noreferrer">{track.track.album.name}</a></div>
-                  <button onClick={() => {CopyToClipboard(`${index}albumname`); ShowCopied()}}><Icon icon={bxCopy} width="20px" /></button>
-                </div>
-              </td>
-              <td>{track.added_at.substring(5,7)}/{track.added_at.substring(8,10)}/{track.added_at.substring(0,4)}</td>
-            </tr>
-          ))}
-        </tbody>
-        </table>
-      </div>
-      
+      <Results name={playlistName} owner={playlistOwner} tracks={playlistTracks} />
       <Instruction />
-
-      <footer>
-        <div>Built by Lawrence</div>
-      </footer>
-
     </main>
   )
 }
