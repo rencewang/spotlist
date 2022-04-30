@@ -3,11 +3,13 @@ import './App.scss'
 
 export default () => {
     return (
-        <div id="instruction">
-        <section id="instruction-left">
-          <div style={{fontSize: "40px", marginBottom: "5px", fontWeight: "700"}}>Access any Spotify playlist using its playlist ID or link</div>
-          <div>For a copy-and-pastable list of track, artist, and album names.</div>
+      <section id="instruction">
+        <div>
+        <h1>Access any Spotify playlist using its playlist ID or link</h1>
+          <h3>For a copy-and-pastable list of track, artist, and album names.</h3>
+
           <div style={{fontSize: "30px", fontWeight: "700", marginTop: "30px", marginBottom: "5px", fontStyle: "italic"}}>Try these playlists?</div>
+
           <table>
             <tbody>
               <tr>
@@ -24,15 +26,11 @@ export default () => {
               </tr>
             </tbody>
           </table>
-        </section>
-        <section id="instruction-right" style={{fontSize: "15px"}}>
-          <div style={{fontSize: "20px", marginBottom: "10px"}}>Spotlist is a <a href="https://github.com/law-wang/spotlist">project</a> by <a href="https://www.rence.la/">Lawrence</a> using React and Spotify API.</div>
-          <div><b>2020.08.02:</b> initial launch.</div>
-          <div><b>2020.08.16:</b> style update: neumorphic style update.</div>
-          <div><b>2021.01.22:</b> style update: table style overhaul.</div>
-          <div><b>2021.01.23:</b> style update: home page overhaul, random background color; feature update: playlist content links to Spotify, search with playlist link in addition to ID. </div>
-          <div><b>2021.03.09:</b> bug fix: ability to get tracks from multi-page responses. </div>
-        </section>
         </div>
+      
+        <footer>
+          Spotlist is <a href="https://github.com/law-wang/spotlist" rel="noopener noreferrer" target="_blank">built</a> by <a href="https://www.rence.la/" rel="noopener noreferrer" target="_blank">Lawrence</a> using React and Spotify API :)
+        </footer>
+      </section>
     )
 }

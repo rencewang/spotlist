@@ -93,8 +93,8 @@ function App() {
   const ShowAlert = (ref) => {
     ref.current.style.opacity = 1
     ref.current.style.display = "block"
-    setTimeout(() => ref.current.style.opacity = 0, 500)
-    setTimeout(() => ref.current.style.display = "none", 1000)
+    setTimeout(() => ref.current.style.opacity = 0, 200)
+    setTimeout(() => ref.current.style.display = "none", 300)
   }
 
   // For random color
@@ -118,8 +118,10 @@ function App() {
         </form>
       </header>
 
-      <Results name={playlistName} owner={playlistOwner} tracks={playlistTracks} ShowAlert={ShowAlert} copiedRef={copied} />
-      <Instruction />
+      <div id="content">
+        <Results name={playlistName} owner={playlistOwner} tracks={playlistTracks} ShowAlert={ShowAlert} copiedRef={copied} />
+        <Instruction />
+      </div>
     </main>
   )
 }
