@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react'
-
+import React, { useEffect, useState, useRef } from 'react'
 import { Icon } from '@iconify/react'
-import bxCopy from '@iconify/icons-bx/bx-copy'
 import bxPlay from '@iconify/icons-bx/bx-play'
 
 import Instruction from "./instruction"
@@ -12,10 +10,16 @@ const axios = require('axios')
 
 function App() {
 
-  // Parse input string for playlist ID
   const [userInput, setInput] = useState('')
-  const [playlistID, setID] = useState('')
+  const [playlistID, setID] = useState('')  
+  const [playlistName, setName] = useState('')
+  const [playlistOwner, setOwner] = useState('')
+  const [playlistTracks, setTrack] = useState([])
 
+  const copied = useRef(null)
+  const tryagain = useRef(null)
+
+  // Parse input string for playlist ID
   useEffect(() => {
       let slicedURL = userInput
       if (userInput.includes("/playlist/")) {
@@ -37,17 +41,6 @@ function App() {
       console.log(err)
     }
   }
-
-  // Playlist information states
-  const [playlistName, setName] = useState('')
-  const [playlistOwner, setOwner] = useState('')
-  const [playlistTracks, setTrack] = useState([])
-
-  // Style states
-  const [tryAgainDisplay, setTryAgainDisplay] = useState("none")
-  const [tryAgainOpacity, setTryAgainOpacity] = useState(100)
-  const [copiedDisplay, setCopiedDisplay] = useState("none")
-  const [copiedOpacity, setCopiedOpacity] = useState(0)
 
   // Making API calls to get playlist information
   const GetPlaylist = async (event) => {
@@ -83,62 +76,39 @@ function App() {
             }
           })
           const data = await page.data
-
           setTrack(playlistTracks => [...playlistTracks, ...data.items])
-          console.log(playlistTracks)
+
         } catch (error) {
           // error occurred in pagination calls
           console.log(error)
         }
       }
-
     } catch (error) {
       // prompt error message
-      console.log("Try Again.", error)
-      setTryAgainDisplay("block")
-      setTryAgainOpacity(100)
-      setTimeout(() => setTryAgainOpacity(0), 250)
-      setTimeout(() => setTryAgainDisplay("none"), 500)
+      ShowAlert(tryagain)
     }
   }
 
-  // For copy to clipboard button
-  function CopyToClipboard(element) {
-    var range = document.createRange()
-    range.selectNode(document.getElementById( element ))
-    window.getSelection().removeAllRanges()
-    window.getSelection().addRange(range)
-    document.execCommand("copy")
-    window.getSelection().removeAllRanges()
-  }
-
   // For "Copied" alert
-  function ShowCopied() {
-    console.log("Copied!")
-    setCopiedDisplay("block")
-    setCopiedOpacity(100)
-    setTimeout(() => setCopiedOpacity(0), 500)
-    setTimeout(() => setCopiedDisplay("none"), 1000)
+  const ShowAlert = (ref) => {
+    ref.current.style.opacity = 1
+    ref.current.style.display = "block"
+    setTimeout(() => ref.current.style.opacity = 0, 500)
+    setTimeout(() => ref.current.style.display = "none", 1000)
   }
 
-  // For random color background
-  function RandomBackgroundColor() {
-    var hue = 1 + Math.random() * (360 - 1)
-    return `hsl(${hue}, 30%, 80%)`
-  }
-  const [randomBackgroundColor] = useState(RandomBackgroundColor())
-  document.body.style.backgroundColor = randomBackgroundColor
-
+  // For random color
+  const hue = 1 + Math.random() * (360 - 1)
+  const [backgroundColor] = useState(`hsl(${hue}, 30%, 80%)`)
+  const [textColor] = useState(`hsl(${hue}, 100%, 20%)`)
+  document.body.style.backgroundColor = backgroundColor
+  document.body.style.color = textColor
 
   return (
     <main className="App">
       
-      <div className="alert-message" style={{display: copiedDisplay, opacity: copiedOpacity}} id="copied">
-          Copied!
-      </div>
-      <div className="alert-message" style={{display: tryAgainDisplay, opacity: tryAgainOpacity}} id="try-again"> 
-        Try again with a valid playlist ID or link
-      </div>
+      <div className="alert-message" ref={copied}>Copied!</div>
+      <div className="alert-message" ref={tryagain}>Try again with a valid playlist ID or link</div>
 
       <header>
         <h2><a href="/">Spotlist</a></h2>
@@ -148,7 +118,7 @@ function App() {
         </form>
       </header>
 
-      <Results name={playlistName} owner={playlistOwner} tracks={playlistTracks} />
+      <Results name={playlistName} owner={playlistOwner} tracks={playlistTracks} ShowAlert={ShowAlert} copiedRef={copied} />
       <Instruction />
     </main>
   )

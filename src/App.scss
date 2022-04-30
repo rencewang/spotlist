@@ -4,7 +4,7 @@ input:focus, select:focus, textarea:focus, button:focus { outline: none; }
 
 ::-moz-selection { background-color: rgb(212, 212, 212); }
 ::selection { background-color: rgb(212, 212, 212); }
-::placeholder { color: #1d1d1d; }
+::placeholder { color: gray; }
 
 body { 
   width: 100vw; 
@@ -16,10 +16,12 @@ body {
 }
 
 a {
-  color: #1d1d1d;
+  color: inherit;
   text-decoration: none;
   transition: all 0.3s ease;
-  &:hover { color: #f8f8f8; }
+  &:hover { 
+    color: #000; 
+  }
 }
 
 .App {
@@ -45,7 +47,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f0cc5f;
+  background: rgba(255, 255, 255, 30%);
 
   form {
     display: flex;
@@ -54,7 +56,7 @@ header {
     button, input {
       height: 35px;
       border: none;
-      background: gray;
+      background: rgba(255, 255, 255, 40%);
     }
 
     input {
@@ -69,9 +71,9 @@ header {
       border-radius: 0 50px 50px 0;
       cursor: pointer;
       transition: all 0.3s ease;
-      color: rgba(255, 255, 255, 50%);
+      color: inherit;
       &:hover { 
-        color: #f8f8f8; 
+        color: #000; 
       }
     }
   }
@@ -144,6 +146,8 @@ header {
 }
 
 .alert-message {
+  opacity: 0;
+  display: none;
   position: fixed;
   height: 40px;
   width: 500px;
@@ -170,7 +174,6 @@ header {
 #instruction {
   margin-top: 30px;
   font-size: 25px;
-  color: #1d1d1d;
   display: flex;
   justify-content: space-between;
   width: 100%;
