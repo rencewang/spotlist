@@ -46,14 +46,13 @@ const Results = (props) => {
     return (
         <section className="results" id="results">
 
-            <button onClick={(e) => DownloadCSV(e)} id='download'>
-                download
-            </button>
-
-            <h3 id="playlistName">{name}<small> {'\u00A0'} By {'\u00A0'} </small>{owner}</h3>
+            <div id='resultsheader'>
+                <h1 id="playlistName"><a href={name.link} target="_blank" rel="noopener noreferrer">{name.name}</a> by <a href={owner.link} target="_blank" rel="noopener noreferrer">{owner.owner}</a></h1>
+                <button onClick={(e) => DownloadCSV(e)} id='download'>Download as CSV</button>
+            </div>
 
             <table className="tracklisting" id="tracktable">
-                <thead>
+                <thead id='trackhead'>
                     <tr>
                         <th>#</th>
                         <th>Track</th>

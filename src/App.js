@@ -12,8 +12,8 @@ const App = () => {
 
   const [userInput, setInput] = useState('')
   const [playlistID, setID] = useState('')  
-  const [playlistName, setName] = useState('')
-  const [playlistOwner, setOwner] = useState('')
+  const [playlistName, setName] = useState({})
+  const [playlistOwner, setOwner] = useState({})
   const [playlistTracks, setTrack] = useState([])
 
   const copied = useRef(null)
@@ -59,10 +59,11 @@ const App = () => {
       const data = await response.data
       
       // set the playlist name and creator
-      setName(data.name) 
-      setOwner(data.owner.display_name) 
+      setName({name: data.name, link: data.external_urls.spotify}) 
+      setOwner({owner: data.owner.display_name, link: data.owner.external_urls.spotify}) 
 
       document.getElementById("results").style.display = "block"
+      document.getElementById("trackhead").style.backgroundColor = backgroundColor
       document.getElementById("instruction").style.display = "none"
 
       // set tracklist while taking care of pagination
