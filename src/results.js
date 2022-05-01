@@ -1,6 +1,7 @@
 import React from 'react'
 import { Icon } from '@iconify/react'
 import bxCopy from '@iconify/icons-bx/bx-copy'
+import circleChevronUpFill from '@iconify/icons-akar-icons/circle-chevron-up-fill'
 
 import './App.scss'
 
@@ -16,11 +17,9 @@ const Results = (props) => {
 
     const DownloadCSV = (event) => {
         event.preventDefault()
-        
         // Create a blob
         var blob = new Blob([TracksToCSV(tracks)], { type: 'text/csv;charset=utf-8;' })
         var url = URL.createObjectURL(blob)
-        
         // Create a link to download it
         var pom = document.createElement('a')
         pom.href = url
@@ -38,6 +37,12 @@ const Results = (props) => {
         window.getSelection().removeAllRanges()
     }
 
+    // For scroll up button
+    const ScrollUp = (e) => {
+        e.preventDefault()
+        document.querySelector("#content").scrollTo( { left: 0, top: 0, behavior: 'smooth' } )
+    }
+
     return (
         <section className="results" id="results">
 
@@ -48,46 +53,63 @@ const Results = (props) => {
             <h3 id="playlistName">{name}<small> {'\u00A0'} By {'\u00A0'} </small>{owner}</h3>
 
             <table className="tracklisting" id="tracktable">
-            <thead>
-            <tr>
-                <th>Track</th>
-                <th>Artist</th>
-                <th>Album</th>
-                <th>Added on</th>
-            </tr>
-            </thead>
-            <tbody>
-            {tracks ? tracks.map((track, index) => (
-                <tr key={index}>
-                <td>
-                    <div className="justify">
-                    <div id={`${index}trackname`}><a href={track.track.external_urls.spotify} target="_blank" rel="noopener noreferrer"> {index} {track.track.name}</a></div>
-                    <button onClick={() => {CopyToClipboard(`${index}trackname`); ShowAlert(copiedRef)}}><Icon icon={bxCopy} width="20px" /></button>
-                    </div>
-                </td>
-                <td>
-                    <div className="justify">
-                    <div id={`${index}artistname`}>
-                        {track.track.artists.map((artist, index) => (
-                        index === 0 ? 
-                        <span key={index}><a href={track.track.artists[index].external_urls.spotify} target="_blank" rel="noopener noreferrer">{artist.name}</a></span> : 
-                        <span key={index}>, <a href={track.track.artists[index].external_urls.spotify} target="_blank" rel="noopener noreferrer">{artist.name}</a></span>
-                        ))}
-                    </div>
-                    <button onClick={() => {CopyToClipboard(`${index}artistname`); ShowAlert(copiedRef)}}><Icon icon={bxCopy} width="20px" /></button>
-                    </div>
-                </td>
-                <td>
-                    <div className="justify">
-                    <div id={`${index}albumname`}><a href={track.track.album.external_urls.spotify} target="_blank" rel="noopener noreferrer">{track.track.album.name}</a></div>
-                    <button onClick={() => {CopyToClipboard(`${index}albumname`); ShowAlert(copiedRef)}}><Icon icon={bxCopy} width="20px" /></button>
-                    </div>
-                </td>
-                <td>{track.added_at.substring(5,7)}/{track.added_at.substring(8,10)}/{track.added_at.substring(0,4)}</td>
-                </tr>
-            )) : null}
-            </tbody>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Track</th>
+                        <th>Artist</th>
+                        <th>Album</th>
+                        <th>Added on</th>
+                    </tr>
+                </thead>
+            
+                <tbody>
+                    {tracks ? tracks.map((track, index) => (
+                        <tr key={index}>
+                            <td>{index+1}</td>
+
+                            <td>
+                                <div className="justify">
+                                    <div id={`${index}trackname`}><a href={track.track.external_urls.spotify} target="_blank" rel="noopener noreferrer"> {track.track.name}</a></div>
+                                    <button onClick={() => {CopyToClipboard(`${index}trackname`); ShowAlert(copiedRef)}}>
+                                        <Icon icon={bxCopy} width="20px" />
+                                    </button>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div className="justify">
+                                    <div id={`${index}artistname`}>
+                                        {track.track.artists.map((artist, index) => (
+                                        index === 0 ? 
+                                        <span key={index}><a href={track.track.artists[index].external_urls.spotify} target="_blank" rel="noopener noreferrer">{artist.name}</a></span> : 
+                                        <span key={index}>, <a href={track.track.artists[index].external_urls.spotify} target="_blank" rel="noopener noreferrer">{artist.name}</a></span>
+                                        ))}
+                                    </div>
+                                    <button onClick={() => {CopyToClipboard(`${index}artistname`); ShowAlert(copiedRef)}}>
+                                        <Icon icon={bxCopy} width="20px" />
+                                    </button>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div className="justify">
+                                    <div id={`${index}albumname`}><a href={track.track.album.external_urls.spotify} target="_blank" rel="noopener noreferrer">{track.track.album.name}</a></div>
+                                    <button onClick={() => {CopyToClipboard(`${index}albumname`); ShowAlert(copiedRef)}}>
+                                        <Icon icon={bxCopy} width="20px" />
+                                    </button>
+                                </div>
+                            </td>
+
+                            <td>{track.added_at.substring(5,7)}/{track.added_at.substring(8,10)}/{track.added_at.substring(0,4)}</td>
+                        </tr>
+                    )) : null}
+                </tbody>
             </table>
+
+            <button type='button' className="gotop" onClick={(e) => ScrollUp(e)}>
+                <Icon icon={circleChevronUpFill} width="50px" />
+            </button>
         </section>
     )
 }

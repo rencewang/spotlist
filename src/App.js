@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Icon } from '@iconify/react'
-import bxPlay from '@iconify/icons-bx/bx-play'
+import playFill from '@iconify/icons-bi/play-fill'
 
 import Instruction from "./instruction"
 import Results from './results'
@@ -93,8 +93,8 @@ const App = () => {
   const ShowAlert = (ref) => {
     ref.current.style.opacity = 1
     ref.current.style.display = "block"
-    setTimeout(() => ref.current.style.opacity = 0, 200)
-    setTimeout(() => ref.current.style.display = "none", 300)
+    setTimeout(() => ref.current.style.opacity = 0, 300)
+    setTimeout(() => ref.current.style.display = "none", 400)
   }
 
   // For random color
@@ -114,7 +114,7 @@ const App = () => {
         <h2><a href="/">Spotlist</a></h2>
         <form onSubmit={event => GetPlaylist(event, playlistID)} autoComplete="off">
           <input type="text" id="playlist" name="playlist" value={userInput} placeholder="Enter Playlist ID or Link" onChange={event => setInput(event.target.value)} required/>
-          <button type="submit"><Icon icon={bxPlay} width="100%" /></button>
+          <button type="submit"><Icon icon={playFill} width="100%" /></button>
         </form>
       </header>
 
