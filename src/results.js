@@ -10,7 +10,7 @@ const Results = (props) => {
 
     const TracksToCSV = (tracks) => {
         let csvTracks = tracks.map(row => 
-            row.track.name + ',"' + row.track.artists.map(artist => artist.name).join(', ') + '",' + row.track.album.name + ',' + row.added_at
+            '"' + row.track.name + '","' + row.track.artists.map(artist => artist.name).join(', ') + '","' + row.track.album.name + '",' + row.added_at
         ).join('\r\n')
         return ("track_name, artists, album_name, added_at \r\n" + csvTracks)
     }

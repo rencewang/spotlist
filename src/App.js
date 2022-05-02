@@ -63,7 +63,7 @@ const App = () => {
       setOwner({owner: data.owner.display_name, link: data.owner.external_urls.spotify}) 
 
       document.getElementById("results").style.display = "block"
-      document.getElementById("trackhead").style.backgroundColor = backgroundColor
+      document.getElementById("trackhead").style.backgroundColor = `hsl(${backgroundHue}, 30%, 80%)`
       document.getElementById("instruction").style.display = "none"
 
       // set tracklist while taking care of pagination
@@ -99,11 +99,10 @@ const App = () => {
   }
 
   // For random color
-  const hue = 1 + Math.random() * (360 - 1)
-  const [backgroundColor] = useState(`hsl(${hue}, 30%, 80%)`)
-  const [textColor] = useState(`hsl(${hue}, 100%, 20%)`)
-  document.body.style.backgroundColor = backgroundColor
-  document.body.style.color = textColor
+  const [backgroundHue] = useState(1 + Math.random() * (360 - 1))
+  document.body.style.backgroundColor = `hsl(${backgroundHue}, 30%, 80%)`
+  document.body.style.color = `hsl(${backgroundHue}, 100%, 20%)`
+  
 
   return (
     <main className="App">
