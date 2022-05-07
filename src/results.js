@@ -69,7 +69,7 @@ const Results = (props) => {
 
                             <td>
                                 <div className="justify">
-                                    <div id={`${index}trackname`}><a href={track.track.external_urls.spotify} target="_blank" rel="noopener noreferrer"> {track.track.name}</a></div>
+                                    <div id={`${index}trackname`}><a href={track.track.external_urls.spotify || null} target="_blank" rel="noopener noreferrer"> {track.track.name}</a></div>
                                     <button onClick={() => {CopyToClipboard(`${index}trackname`); ShowAlert(copiedRef)}}>
                                         <Icon icon={bxCopy} width="20px" />
                                     </button>
@@ -81,8 +81,8 @@ const Results = (props) => {
                                     <div id={`${index}artistname`}>
                                         {track.track.artists.map((artist, index) => (
                                         index === 0 ? 
-                                        <span key={index}><a href={track.track.artists[index].external_urls.spotify} target="_blank" rel="noopener noreferrer">{artist.name}</a></span> : 
-                                        <span key={index}>, <a href={track.track.artists[index].external_urls.spotify} target="_blank" rel="noopener noreferrer">{artist.name}</a></span>
+                                        <span key={index}><a href={track.track.artists[index].external_urls.spotify || null} target="_blank" rel="noopener noreferrer">{artist.name}</a></span> : 
+                                        <span key={index}>, <a href={track.track.artists[index].external_urls.spotify || null} target="_blank" rel="noopener noreferrer">{artist.name}</a></span>
                                         ))}
                                     </div>
                                     <button onClick={() => {CopyToClipboard(`${index}artistname`); ShowAlert(copiedRef)}}>
@@ -93,7 +93,7 @@ const Results = (props) => {
 
                             <td>
                                 <div className="justify">
-                                    <div id={`${index}albumname`}><a href={track.track.album.external_urls.spotify} target="_blank" rel="noopener noreferrer">{track.track.album.name}</a></div>
+                                    <div id={`${index}albumname`}><a href={track.track.album.external_urls.spotify || null} target="_blank" rel="noopener noreferrer">{track.track.album.name}</a></div>
                                     <button onClick={() => {CopyToClipboard(`${index}albumname`); ShowAlert(copiedRef)}}>
                                         <Icon icon={bxCopy} width="20px" />
                                     </button>
