@@ -66,9 +66,9 @@ const Results = (props) => {
                     <tbody>
                         {tracks ? tracks.map((track, index) => (
                             <tr key={index}>
-                                <td>{index+1}</td>
+                                <td label="#">{index+1}</td>
 
-                                <td>
+                                <td label="Track">
                                     <div className="justify">
                                         <div id={`${index}trackname`}><a href={track.track.external_urls.spotify || null} target="_blank" rel="noopener noreferrer"> {track.track.name}</a></div>
                                         <button onClick={() => {CopyToClipboard(`${index}trackname`); ShowAlert(copiedRef)}}>
@@ -77,7 +77,7 @@ const Results = (props) => {
                                     </div>
                                 </td>
 
-                                <td>
+                                <td label="Artist">
                                     <div className="justify">
                                         <div id={`${index}artistname`}>
                                             {track.track.artists.map((artist, index) => (
@@ -92,7 +92,7 @@ const Results = (props) => {
                                     </div>
                                 </td>
 
-                                <td>
+                                <td label="Album">
                                     <div className="justify">
                                         <div id={`${index}albumname`}><a href={track.track.album.external_urls.spotify || null} target="_blank" rel="noopener noreferrer">{track.track.album.name}</a></div>
                                         <button onClick={() => {CopyToClipboard(`${index}albumname`); ShowAlert(copiedRef)}}>
@@ -101,7 +101,7 @@ const Results = (props) => {
                                     </div>
                                 </td>
 
-                                <td>{track.added_at.substring(5,7)}/{track.added_at.substring(8,10)}/{track.added_at.substring(0,4)}</td>
+                                <td label="Added on">{track.added_at.substring(5,7)}/{track.added_at.substring(8,10)}/{track.added_at.substring(0,4)}</td>
                             </tr>
                         )) : null}
                     </tbody>
