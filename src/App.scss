@@ -112,6 +112,10 @@ header {
     }
   }
 
+  #resultstable {
+    overflow-x: auto;
+  }
+
   table {
     width: 100%;
     border-radius: 10px;
