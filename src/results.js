@@ -43,6 +43,8 @@ const Results = (props) => {
         document.querySelector("#content").scrollTo( { left: 0, top: 0, behavior: 'smooth' } )
     }
 
+    console.log(tracks)
+
     return (
         <section className="results" id="results">
 
@@ -64,13 +66,13 @@ const Results = (props) => {
                     </thead>
                 
                     <tbody>
-                        {tracks ? tracks.map((track, index) => (
+                        {tracks ? tracks.map((track, index) => ( 
                             <tr key={index}>
                                 <td label="#">{index+1}</td>
 
                                 <td label="Track">
                                     <div className="justify">
-                                        <div id={`${index}trackname`}><a href={track.track.external_urls.spotify || null} target="_blank" rel="noopener noreferrer"> {track.track.name}</a></div>
+                                        <div id={`${index}trackname`}><a href={track.track ? track.track.external_urls.spotify : null} target="_blank" rel="noopener noreferrer"> {track.track ? track.track.name : null}</a></div>
                                         <button onClick={() => {CopyToClipboard(`${index}trackname`); ShowAlert(copiedRef)}}>
                                             <Icon icon={bxCopy} width="20px" />
                                         </button>
@@ -80,11 +82,11 @@ const Results = (props) => {
                                 <td label="Artist">
                                     <div className="justify">
                                         <div id={`${index}artistname`}>
-                                            {track.track.artists.map((artist, index) => (
+                                            {track.track ? track.track.artists.map((artist, index) => (
                                             index === 0 ? 
                                             <span key={index}><a href={track.track.artists[index].external_urls.spotify || null} target="_blank" rel="noopener noreferrer">{artist.name}</a></span> : 
                                             <span key={index}>, <a href={track.track.artists[index].external_urls.spotify || null} target="_blank" rel="noopener noreferrer">{artist.name}</a></span>
-                                            ))}
+                                            )) : null}
                                         </div>
                                         <button onClick={() => {CopyToClipboard(`${index}artistname`); ShowAlert(copiedRef)}}>
                                             <Icon icon={bxCopy} width="20px" />
@@ -94,7 +96,7 @@ const Results = (props) => {
 
                                 <td label="Album">
                                     <div className="justify">
-                                        <div id={`${index}albumname`}><a href={track.track.album.external_urls.spotify || null} target="_blank" rel="noopener noreferrer">{track.track.album.name}</a></div>
+                                        <div id={`${index}albumname`}><a href={track.track ? track.track.album.external_urls.spotify : null} target="_blank" rel="noopener noreferrer">{track.track ? track.track.album.name: null}</a></div>
                                         <button onClick={() => {CopyToClipboard(`${index}albumname`); ShowAlert(copiedRef)}}>
                                             <Icon icon={bxCopy} width="20px" />
                                         </button>
@@ -102,7 +104,7 @@ const Results = (props) => {
                                 </td>
 
                                 <td label="Added on">{track.added_at.substring(5,7)}/{track.added_at.substring(8,10)}/{track.added_at.substring(0,4)}</td>
-                            </tr>
+                            </tr> : null
                         )) : null}
                     </tbody>
                 </table>
