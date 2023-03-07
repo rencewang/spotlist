@@ -39,10 +39,26 @@ const Results = (props) => {
     pom.click();
   };
 
+  const TracksToJSON = (tracks) => {
+    let results = tracks.map((track) => {
+      // select only the needed data
+      return {
+        track_name: track.track.name,
+        track_url: track.track.external_urls.spotify,
+        artists: track.track.artists.map((artist) => artist.name).join(', '),
+        album_name: track.track.album.name,
+        album_url: track.track.album.external_urls.spotify,
+      };
+    });
+
+    console.log(results);
+    return JSON.stringify(results);
+  };
+
   const DownloadJSON = (event) => {
     event.preventDefault();
     // Create a blob
-    var blob = new Blob([JSON.stringify(tracks)], {
+    var blob = new Blob([TracksToJSON(tracks)], {
       type: 'text/json;charset=utf-8;',
     });
     var url = URL.createObjectURL(blob);
