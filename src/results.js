@@ -101,7 +101,7 @@ const Results = (props) => {
             {owner.owner}
           </a>
         </h1>
-        <div>
+        <div style="display: flex; lex-direction: column; align-items: flex-end;">
           <button onClick={(e) => DownloadJSON(e)} id="download">
             JSON Download
           </button>
